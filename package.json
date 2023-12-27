@@ -9,9 +9,11 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@react-three/fiber": "^8.15.12",
     "next": "14.0.4",
     "react": "^18",
     "react-dom": "^18",
+    "three": "^0.160.0",
     "use-typing-headlines": "^0.9.1"
   },
   "devDependencies": {
