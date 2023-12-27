@@ -1,4 +1,3 @@
-// components/Navigation.js
 import Link from 'next/link';
 
 const Navigation = () => {
