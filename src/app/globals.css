@@ -2,6 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap');
+
+@font-face {
+  font-family: 'Fantasque Sans Mono';
+  src: url('../../public/fonts/FantasqueSansMono-Regular.woff2') format('woff2'),
+       url('../../public/fonts/FantasqueSansMono-Regular.woff') format('woff'), /* Firefox >= 3.6, any other modern browser */
+       url('../../public/fonts/FantasqueSansMono-Regular.ttf') format('truetype'); /* Safari, Android, iOS */
+  font-weight: 400;
+  font-style: normal;
+}
+
+
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
