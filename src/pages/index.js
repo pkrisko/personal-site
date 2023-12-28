@@ -29,12 +29,14 @@ export default function Home() {
   return (
     <>
     <Navigation />
-    <main className="flex min-h-screen flex-col items-start justify-between p-6 md:px-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex mt-20" ref={containerRef}>
-        <h1 className="font-fantastique text-5xl lg:text-8xl h-[192px]">{headline1}<br/>{headline2}</h1>
-      </div>
-      <CellularAutomotaSketch containerRef={containerRef} />
-    </main>
+    <div className="p-6">
+      <main className="flex min-h-screen max-w-[1400px] flex-col items-start justify-between lg:mx-auto" ref={containerRef}>
+        <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex mt-20">
+          <h1 className="font-fantastique text-5xl lg:text-8xl h-[192px]">{headline1}<br/>{headline2}</h1>
+        </div>
+        <CellularAutomotaSketch containerRef={containerRef} />
+      </main>
+    </div>
     </>
   )
 }
