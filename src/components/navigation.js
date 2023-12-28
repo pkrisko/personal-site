@@ -3,10 +3,10 @@ import Grid from '@/components/grid';
 
 const Navigation = () => {
   return (
-    <nav className="absolute top-0 left-0 py-6 px-24 w-full">
+    <nav className="absolute top-0 left-0 p-6 md:px-24 w-full">
       <ul className="flex justify-between items-center w-full">
         <li>
-          <Link className="flex items-center" href="/">
+          <Link className="flex items-center -ml-2" href="/">
             <Grid />
             Patrick Krisko
           </Link>
