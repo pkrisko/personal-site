@@ -37,3 +37,8 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+
+.p5Canvas {
+  margin-left: auto;
+  margin-right: auto;
+}

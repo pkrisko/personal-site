@@ -1,11 +1,16 @@
 import React, { useEffect, useState, useRef } from 'react';
 import p5 from 'p5';
 
+function chopRemainder(x) {
+  let n = 15
+  return Math.floor(x / n) * n;
+}
+
 // https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life
 // https://p5js.org/examples/simulate-game-of-life.html
 const CellularAutomataSketch = ({ containerRef }) => {
   const sketchRef = useRef();
-  const [width, setWidth] = useState(containerRef.current.offsetWidth);
+  const [width, setWidth] = useState(chopRemainder(containerRef.current.offsetWidth));
 
   useEffect(() => {
     const sketch = (p) => {
@@ -17,7 +22,7 @@ const CellularAutomataSketch = ({ containerRef }) => {
 
       p.setup = () => {
         p.frameRate(9);
-        p.createCanvas(width, 400);
+        p.createCanvas(width, 390);
         w = 15;
         columns = p.floor(p.width / w);
         rows = p.floor(p.height / w);
@@ -103,7 +108,7 @@ const CellularAutomataSketch = ({ containerRef }) => {
   useEffect(function setWidthOnResize(){
     const handleResize = () => {
       if (containerRef.current) {
-        setWidth(containerRef.current.offsetWidth);
+        setWidth(chopRemainder(containerRef.current.offsetWidth));
       }
     };
 

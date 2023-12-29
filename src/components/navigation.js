@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import Grid from '@/components/grid';
+import Globe from '@/components/globe';
 
 const Navigation = () => {
   return (
@@ -7,7 +7,7 @@ const Navigation = () => {
       <ul className="flex justify-between items-center">
         <li className="break-word">
           <Link className="flex items-center -ml-2" href="/">
-            <Grid />
+            <Globe />
             Patrick Krisko
           </Link>
         </li>
