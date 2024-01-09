@@ -18,7 +18,7 @@ const Footer = () => (
       <a href="https://github.com/pkrisko/personal-site" className="mr-1">
         <em>Yoink</em> the code
       </a>
-      for this site. Starring and following appreciated!
+      for this site. Star and follow!
     </div>
   </div>
 );

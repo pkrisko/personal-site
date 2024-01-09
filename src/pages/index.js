@@ -25,12 +25,12 @@ export default function Home() {
     'Full-stack',
     'React.js',
     'Technical',
-  ]); // 28
+  ]);
 
   const [headline2] = useTypingHeadlines([
     'developer',
     'extraordinaire',
-    'lead ', // 27
+    'lead.',
   ]);
 
   return (
@@ -51,14 +51,18 @@ export default function Home() {
         <RecursiveTreeSketch containerRef={containerRef} />
         {/* <CellularAutomotaSketch containerRef={containerRef} /> */}
         <div className="h-px w-full bg-white"/>
+        <div className="flex justify-center w-full py-6">
+          <h3 className="text-3xl w-fit">Works</h3>
+        </div>
+        <div className="h-px w-full bg-white"/>
         <div className="grid lg:grid-cols-3 gap-6 mt-6">
           <ExperienceBlock
             title="10:10"
             src="https://framerusercontent.com/images/MhiBwbuhgwo1AmTiM5FjGiKdF0.jpg?scale-down-to=1024"
           >
             <p className="text-xl">
-              Idea to launch in 12 days. Built in 4. Created a &quot;drop&quot; mechanism, realeasing one product
-              (discounted Rolex) per hour, on the hour, for 10 hours. No bots were successful and there were no repeat
+              Created a &quot;drop&quot; mechanism, realeasing one product (heavily discounted Rolex) per hour, on
+              the hour, for 10 hours. Idea to launch in 12 days, and <em>built in only 4</em>. No bots were successful and there were no repeat
               customers. This initiative set 24h revenue records for the company.
               <br />
               <a href="https://www.alexmakesthings.co/work/hodinkee-10-10" className="underline">Learn more.</a>
