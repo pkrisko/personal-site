@@ -30,7 +30,7 @@ export default function Home() {
   const [headline2] = useTypingHeadlines([
     'developer',
     'extraordinaire',
-    'lead', // 27
+    'lead ', // 27
   ]);
 
   return (
@@ -41,9 +41,10 @@ export default function Home() {
         <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex mt-20 mb-10">
           <h1 className="font-sans text-5xl lg:text-8xl h-24 lg:h-[192px]">{headline1}<br/>{headline2}</h1>
         </div>
-        <p className="lg:w-[42%] self-start py-2 lg:py-0">
-          I'm Patrick Krisko, a full-stack software developer with 6+ years of experience in web tech. I'm currently
-          making pixels go <em>brrr</em> at <a href="https://www.hodinkee.com/" className="underline">Hodinkee</a>.
+        <p className="lg:w-[42%] self-start py-2 lg:py-0 text-xl">
+          I&apos;m Patrick Krisko, a full-stack software developer with 6+ years of experience in web tech. I&apos;m
+          currently making pixels go <em>brrr</em> at
+          <a href="https://www.hodinkee.com/" className="ml-1">Hodinkee</a>.
           <br/><br/>
           I love bringing <em>ideas</em> and <em>designs</em> to life. 
         </p>
@@ -56,9 +57,9 @@ export default function Home() {
             src="https://framerusercontent.com/images/MhiBwbuhgwo1AmTiM5FjGiKdF0.jpg?scale-down-to=1024"
           >
             <p className="text-xl">
-              Idea to launch in 12 days. Built in 4. Created a "drop" mechanism, realeasing one product (discounted
-              Rolex) per hour, on the hour, for 10 hours. No bots were successful and there were no repeat customers.
-              This initiative set 24h revenue records for the company.
+              Idea to launch in 12 days. Built in 4. Created a &quot;drop&quot; mechanism, realeasing one product
+              (discounted Rolex) per hour, on the hour, for 10 hours. No bots were successful and there were no repeat
+              customers. This initiative set 24h revenue records for the company.
               <br />
               <a href="https://www.alexmakesthings.co/work/hodinkee-10-10" className="underline">Learn more.</a>
             </p>
