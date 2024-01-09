@@ -8,13 +8,13 @@ const Navigation = () => {
         <li className="break-word">
           <Link className="flex items-center -ml-2" href="/">
             <Globe />
-            Patrick Krisko
+            {/* Patrick Krisko */}
           </Link>
         </li>
-        <li>
+        {/* <li>
           <a href="https://www.linkedin.com/in/pkrisko" className="text-lg">Portfolio</a>
-        </li>
-        <li className="max-w-[33.33%] break-all">
+        </li> */}
+        <li className="max-w-1/2">
           <a href="mailto:patrick.krisko@gmail.com" className="text-lg">patrick.krisko@gmail.com</a>
         </li>
       </ul>
