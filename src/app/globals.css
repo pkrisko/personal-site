@@ -38,6 +38,10 @@ body {
     rgb(var(--background-start-rgb));
 }
 
+a {
+  @apply underline;
+}
+
 .p5Canvas {
   margin-left: auto;
   margin-right: auto;

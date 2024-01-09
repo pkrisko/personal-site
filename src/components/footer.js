@@ -1,15 +1,24 @@
 import React from 'react';
-import { Horse, GithubLogo } from '@phosphor-icons/react';
+import { Copyright, GithubLogo, LinkedinLogo } from '@phosphor-icons/react';
 
 const Footer = () => (
   <div className="mt-4">
-    This site was built with Next.js.
-    <br />
     <div className="flex items-center">
-      <GithubLogo size={24} /><span className="line-through mr-1">Steal my code</span> see how this site was made.
+      <Copyright size={20} className="mr-1" /> 2024 Patrick Krisko.
     </div>
-    <br />
-    &#169; Patrick Krisko.
+    <div className="flex items-center mt-1">
+      <LinkedinLogo size={20} className="mr-1" /> 
+      <a href="https://www.linkedin.com/in/pkrisko/">
+        Slide into my LinkedIn DMs.
+      </a>
+    </div>
+    <div className="flex items-center mt-1">
+      <GithubLogo size={20} weight="fill" className="mr-1" />
+      <a href="https://github.com/pkrisko/personal-site" className="mr-1">
+        <em>Yoink</em> the code for this site.
+      </a>
+      Starring and following appreciated.
+    </div>
   </div>
 );
 
