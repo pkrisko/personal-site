@@ -41,12 +41,12 @@ const CellularAutomataSketch = ({ containerRef }) => {
       };
 
       p.draw = () => {
-        p.background(255);
+        p.background(0);
         generate();
         for (let i = 0; i < columns; i++) {
           for (let j = 0; j < rows; j++) {
-            if (board[i][j] === 1) p.fill(0);
-            else p.fill(255);
+            if (board[i][j] === 1) p.fill(255);
+            else p.fill(0);
             p.stroke(0);
             p.rect(i * w, j * w, w - 1, w - 1);
           }

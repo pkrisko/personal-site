@@ -2,6 +2,7 @@
 
 import React, { useRef } from 'react';
 import { useTypingHeadlines } from 'use-typing-headlines';
+import CustomHead from '@/components/customHead';
 import Navigation from '@/components/navigation';
 import ExperienceBlock from '@/components/experienceBlock';
 import Footer from '@/components/footer';
@@ -35,6 +36,7 @@ export default function Home() {
 
   return (
     <>
+    <CustomHead />
     <Navigation />
     <div className="p-6">
       <main className="flex min-h-screen max-w-[1400px] flex-col items-start justify-between lg:mx-auto" ref={containerRef}>
@@ -49,7 +51,6 @@ export default function Home() {
           I love bringing <em>ideas</em> and <em>designs</em> to life. 
         </p>
         <RecursiveTreeSketch containerRef={containerRef} />
-        {/* <CellularAutomotaSketch containerRef={containerRef} /> */}
         <div className="h-px w-full bg-white"/>
         <div className="flex justify-center w-full py-6">
           <h3 className="text-3xl w-fit">Works</h3>
@@ -93,6 +94,7 @@ export default function Home() {
             </p>
           </ExperienceBlock>
         </div>
+        {/* <CellularAutomotaSketch containerRef={containerRef} /> */}
         <div className="h-[400px]" />
         <Footer/>
       </main>
