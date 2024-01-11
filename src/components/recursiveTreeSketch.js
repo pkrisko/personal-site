@@ -1,15 +1,16 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import p5 from 'p5';
 
 const RecursiveTreeSketch = ({ containerRef }) => {
   const sketchRef = useRef();
+  const [width, setWidth] = useState(containerRef.current.offsetWidth);
 
-  useEffect(() => {
+  useEffect(function p5Sketch() {
     const sketch = (p) => {
       let theta;
 
       p.setup = () => {
-        p.createCanvas(containerRef.current.offsetWidth, 500);
+        p.createCanvas(width, 500);
       };
 
       p.draw = () => {
@@ -17,12 +18,7 @@ const RecursiveTreeSketch = ({ containerRef }) => {
         p.frameRate(30);
         p.stroke(255);
 
-        // Use window.scrollY for vertical scroll position
-        let scrollPos = window.scrollY;
-
-        // Map scroll position to an angle between 0 and 90 degrees
-        // Adjust the mapping as per the height of your page
-        let a = p.map(scrollPos, 0, 500, 0, 75);
+        let a = p.map(window.scrollY, 0, 500, 0, 75);
         theta = p.radians(a);
 
         p.translate(p.width / 2, p.height);
@@ -57,6 +53,18 @@ const RecursiveTreeSketch = ({ containerRef }) => {
 
     return () => {
       myP5.remove();
+    };
+  }, [width]);
+
+  useEffect(function resize() {
+    const handleResize = () => {
+      setWidth(containerRef.current.offsetWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
 

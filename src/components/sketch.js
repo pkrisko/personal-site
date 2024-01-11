@@ -1,13 +1,14 @@
 import React, { useEffect, useState, useRef } from 'react';
 import p5 from 'p5';
 
-function chopRemainder(x) {
-  let n = 15
-  return Math.floor(x / n) * n;
-}
+const chopRemainder = (x) => Math.floor(x / 15) * 15;
 
-// https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life
-// https://p5js.org/examples/simulate-game-of-life.html
+/**
+ * Implementation of [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life)
+ * Based on source from https://p5js.org/examples/simulate-game-of-life.html. I love p5.js!
+ * @param {*} props.containerRef 
+ * @returns React.Component
+ */
 const CellularAutomataSketch = ({ containerRef }) => {
   const sketchRef = useRef();
   const [width, setWidth] = useState(chopRemainder(containerRef.current.offsetWidth));

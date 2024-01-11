@@ -6,7 +6,7 @@ const SpinningGlobe = () => {
   const [isHovered, setIsHovered] = useState(false);
 
   useFrame(() => {
-    const speed = isHovered ? .03 : .01;
+    const speed = isHovered ? .01 : .005;
     globeRef.current.rotation.y += speed;
 
     const scale = isHovered ? 1.05 : 1;
@@ -27,7 +27,7 @@ const SpinningGlobe = () => {
 
 const GlobeScene = () => {
   return (
-    <div className="globe-container w-12 h-12">
+    <div className="globe-container w-16 h-16">
       <Canvas>
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} />
