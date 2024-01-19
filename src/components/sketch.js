@@ -124,7 +124,7 @@ const CellularAutomataSketch = ({ containerRef }) => {
         resizeObserver.unobserve(containerRef.current);
       }
     };
-  }, []);
+  }, [containerRef]);
 
   return <div className="w-full" ref={sketchRef}></div>;
 };

@@ -46,7 +46,7 @@ export default function Home() {
         <p className="lg:w-[42%] self-start py-2 lg:py-0 text-xl">
           I&apos;m Patrick Krisko, a full-stack software developer with 6+ years of experience in web tech. I&apos;m
           currently making pixels go <em>brrr</em> at
-          <a href="https://www.hodinkee.com/" className="ml-1">Hodinkee</a>.
+          <a href="https://www.hodinkee.com/" target="_blank" className="ml-1">Hodinkee</a>.
           <br/><br/>
           I love bringing <em>ideas</em> and <em>designs</em> to life. 
         </p>
@@ -59,6 +59,7 @@ export default function Home() {
         <div className="grid lg:grid-cols-3 gap-6 mt-6">
           <ExperienceBlock
             title="10:10"
+            subTitle="Hodinkee"
             src="https://framerusercontent.com/images/MhiBwbuhgwo1AmTiM5FjGiKdF0.jpg?scale-down-to=1024"
           >
             <p className="text-xl">
@@ -66,11 +67,12 @@ export default function Home() {
               the hour, for 10 hours. Idea to launch in 12 days, and <em>built in only 4</em>. No bots were successful and there were no repeat
               customers. This initiative set 24h revenue records for the company.
               <br />
-              <a href="https://www.alexmakesthings.co/work/hodinkee-10-10" className="underline">Learn more.</a>
+              <a href="https://www.alexmakesthings.co/work/hodinkee-10-10" target="_blank">Learn more.</a>
             </p>
           </ExperienceBlock>
           <ExperienceBlock
             title="Brand Landing Pages"
+            subTitle="Hodinkee"
             src="/images/blp-preview.png"
           >
             <p className="text-xl">
@@ -78,11 +80,12 @@ export default function Home() {
               pages. Data merchandized and queried entirely through Algolia. Led to an increase in qualified sessions
               and SEO organic traffic.
             <br />
-            <a href="https://shop.hodinkee.com/collections/cartier-brand" className="underline">See an example.</a>
+            <a href="https://shop.hodinkee.com/collections/cartier-brand" target="_blank">See an example.</a>
             </p>
           </ExperienceBlock>
           <ExperienceBlock
             title="Lume Design System"
+            subTitle="Hodinkee"
             src="https://framerusercontent.com/images/IFp34lI2q6bDiXX2IU67YvfdLo.jpg?scale-down-to=1024"
           >
             <p className="text-xl">
@@ -90,13 +93,36 @@ export default function Home() {
             React component bindings. Effectively used across a variety of projects despite unusual technical
             constraints.
             <br />
-            <a href="https://www.alexmakesthings.co/work/lume-design-system" className="underline">Learn more.</a>
+            <a href="https://www.alexmakesthings.co/work/lume-design-system" target="_blank">Learn more.</a>
             </p>
+          </ExperienceBlock>
+          <ExperienceBlock
+            title="Peril Prediction"
+            subTitle="Asurion"
+            src="/images/peril-preview.png"
+          >
+            <p className="text-xl">
+              NLP Machine Learning service to predict damage(s) to a phone given a description of what happened. This
+              resulted in a higher repair success rates, and saved 43s average per claim compared to multi-step form
+              questionnaire.
+            </p>
+          </ExperienceBlock>
+          <ExperienceBlock
+            title="Mr. Rand's Class"
+            subTitle="Explore! Community School"
+            src="/images/mr-rands-preview.png"
+          >
+            <p className="text-xl">
+              Created a small Next.js application to help a friend teach his music classroom remotely during 2020. Has
+              ability for teachers to create quizzes, manage grades. Students can take quizzes on music notes and
+              <a href="https://mr.randsclass.com/keyboard" className="ml-1">play the keyboard.</a>
+            </p>
+            <br/>
           </ExperienceBlock>
         </div>
         {/* <CellularAutomotaSketch containerRef={containerRef} /> */}
-        <div className="h-[400px]" />
-        <Footer/>
+        <div className="h-40" />
+        <Footer />
       </main>
     </div>
     </>

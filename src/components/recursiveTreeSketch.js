@@ -66,7 +66,7 @@ const RecursiveTreeSketch = ({ containerRef }) => {
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, []);
+  }, [containerRef]);
 
   return <div className="mx-auto mt-10" ref={sketchRef}></div>;
 };
