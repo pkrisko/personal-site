@@ -10,12 +10,12 @@ import dynamic from 'next/dynamic';
 
 const CellularAutomotaSketch = dynamic(
   () => import('@/components/sketch'),
-  { ssr: false }  // Disable server-side rendering so p5 can use window object
+  { ssr: false }
 );
 
 const RecursiveTreeSketch = dynamic(
   () => import('@/components/recursiveTreeSketch'),
-  { ssr: false }  // Disable server-side rendering so p5 can use window object
+  { ssr: false }
 );
 
 
@@ -120,8 +120,7 @@ export default function Home() {
             <br/>
           </ExperienceBlock>
         </div>
-        {/* <CellularAutomotaSketch containerRef={containerRef} /> */}
-        <div className="h-40" />
+        <CellularAutomotaSketch className="my-40" containerRef={containerRef} />
         <Footer />
       </main>
     </div>

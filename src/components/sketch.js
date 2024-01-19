@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import classNames from 'classnames';
 import p5 from 'p5';
 
 const chopRemainder = (x) => Math.floor(x / 15) * 15;
@@ -9,7 +10,7 @@ const chopRemainder = (x) => Math.floor(x / 15) * 15;
  * @param {*} props.containerRef 
  * @returns React.Component
  */
-const CellularAutomataSketch = ({ containerRef }) => {
+const CellularAutomataSketch = ({ containerRef, className }) => {
   const sketchRef = useRef();
   const [width, setWidth] = useState(chopRemainder(containerRef.current.offsetWidth));
 
@@ -113,20 +114,19 @@ const CellularAutomataSketch = ({ containerRef }) => {
       }
     };
 
-    // Create a resize observer
     const resizeObserver = new ResizeObserver(handleResize);
     if (containerRef.current) {
       resizeObserver.observe(containerRef.current);
     }
 
-    return () => { // Cleanup
+    return () => {
       if (containerRef.current) {
         resizeObserver.unobserve(containerRef.current);
       }
     };
   }, [containerRef]);
 
-  return <div className="w-full" ref={sketchRef}></div>;
+  return <div className={classNames("w-full", className)} ref={sketchRef}></div>;
 };
 
 export default CellularAutomataSketch;
