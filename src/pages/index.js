@@ -115,12 +115,13 @@ export default function Home() {
             <p className="text-xl">
               Created a small Next.js application to help a friend teach his music classroom remotely during 2020. Has
               ability for teachers to create quizzes, manage grades. Students can take quizzes on music notes and
-              <a href="https://mr.randsclass.com/keyboard" className="ml-1">play the keyboard.</a>
+              <a href="https://mr.randsclass.com/keyboard" target="_blank" className="ml-1">play the keyboard.</a>
             </p>
             <br/>
           </ExperienceBlock>
         </div>
-        <CellularAutomotaSketch className="my-40" containerRef={containerRef} />
+        <div className="h-96" />
+        {/* <CellularAutomotaSketch className="my-40" containerRef={containerRef} /> */}
         <Footer />
       </main>
     </div>
