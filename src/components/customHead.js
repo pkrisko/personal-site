@@ -3,7 +3,7 @@ import Head from 'next/head'
 
 const CustomHead = ({
     title = 'Patrick Krisko',
-    description = 'Patrick Krisko is a full-stack software developer with 6+ years of experience in web tech. He is especially skiled in React.js among other JavaScript technologies.',
+    description = 'Patrick Krisko is a full-stack software developer with 7+ years of experience in web tech. He is especially skiled in React.js among other JavaScript technologies.',
     imageSrc = '/images/site-preview.gif',
     pageUrl = 'https://www.pkrisko.com',
   }) => (

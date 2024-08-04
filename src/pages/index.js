@@ -44,13 +44,16 @@ export default function Home() {
           <h1 className="font-sans text-5xl lg:text-8xl h-24 lg:h-[192px]">{headline1}<br/>{headline2}</h1>
         </div>
         <p className="lg:w-[42%] self-start py-2 lg:py-0 text-xl">
-          I&apos;m Patrick Krisko, a full-stack software developer with 6+ years of experience in web tech. I&apos;m
+          I&apos;m Patrick Krisko, a full-stack software developer with 7+ years of experience in web tech. I&apos;m
           currently making pixels go <em>brrr</em> at
           <a href="https://www.hodinkee.com/" target="_blank" className="ml-1">Hodinkee</a>.
           <br/><br/>
           I love bringing <em>ideas</em> and <em>designs</em> to life. 
         </p>
-        <RecursiveTreeSketch containerRef={containerRef} />
+        {/* Container with static height to reduce Cumulative Layout Shift */}
+        <div className="h-[540px]">
+          <RecursiveTreeSketch containerRef={containerRef} />
+        </div>
         <div className="h-px w-full bg-white"/>
         <div className="flex justify-center w-full py-6">
           <h3 className="text-3xl w-fit">Works</h3>

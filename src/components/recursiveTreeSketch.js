@@ -68,7 +68,7 @@ const RecursiveTreeSketch = ({ containerRef }) => {
     };
   }, [containerRef]);
 
-  return <div className="mx-auto mt-10" ref={sketchRef}></div>;
+  return <div className="mx-auto mt-10" ref={sketchRef} />;
 };
 
 export default RecursiveTreeSketch;

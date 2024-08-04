@@ -6,7 +6,7 @@ const SpinningGlobe = () => {
   const [isHovered, setIsHovered] = useState(false);
 
   useFrame(() => {
-    const speed = isHovered ? .01 : .005;
+    const speed = isHovered ? .03 : .02;
     globeRef.current.rotation.y += speed;
 
     const scale = isHovered ? 1.05 : 1;
