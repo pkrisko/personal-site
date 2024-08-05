@@ -7,7 +7,9 @@ const widthAdjustment = 44;
 
 const SpringGridSketch = ({ containerRef, className }) => {
   const sketchRef = useRef();
-  const [width, setWidth] = useState(containerRef.current.offsetWidth + widthAdjustment);
+  const [width, setWidth] = useState(
+    containerRef.current.offsetWidth + widthAdjustment
+  );
 
   useEffect(() => {
     const sketch = (p) => {
@@ -20,17 +22,18 @@ const SpringGridSketch = ({ containerRef, className }) => {
       let wave = {
         x: 0,
         y: 0,
-        vx: 9.0, // Increase from 2 to 2.5 for faster horizontal movement
-        vy: 6.0, // Increase from 1 to 1.5 for faster vertical movement
+        angle: 0, // Initial angle
+        angularVelocity: 0.005, // Rate of change of the angle
+        amplitude: 9.0, // Amplitude of the wave's velocity
         // intensity: 1.995, // Intensity of the wave
-        intensity: 2.2,
-        delta: 100, // Spread of the wave's influence
+        intensity: 3.2,
+        delta: 70, // Spread of the wave's influence
       };
 
       class Dot {
         constructor(i, j, sp) {
-          this.i = i;  // Index in grid horizontally
-          this.j = j;  // Index in grid vertically
+          this.i = i; // Index in grid horizontally
+          this.j = j; // Index in grid vertically
           this.vx = 0;
           this.vy = 0;
           this.x = p.map(i, 0, numCols - 1, sp, p.width - sp);
@@ -41,13 +44,18 @@ const SpringGridSketch = ({ containerRef, className }) => {
 
         update() {
           // If dot is on the boundary, prevent it from moving
-          if (this.i === 0 || this.i === numCols - 1 || this.j === 0 || this.j === numRows - 1) {
+          if (
+            this.i === 0 ||
+            this.i === numCols - 1 ||
+            this.j === 0 ||
+            this.j === numRows - 1
+          ) {
             this.vx = 0;
             this.vy = 0;
           } else {
             let res = spring_force(this.x0, this.y0, this.x, this.y, 10.0); // KGrid is 10.0
-            this.vx += 0.1 * res.x; // DT is 0.1
-            this.vy += 0.1 * res.y;
+            this.vx += 0.075 * res.x; // DT is 0.1
+            this.vy += 0.075 * res.y;
             this.vx *= 0.98; // Damping
             this.vy *= 0.98;
             this.x += 0.1 * this.vx;
@@ -56,9 +64,17 @@ const SpringGridSketch = ({ containerRef, className }) => {
         }
 
         applyWaveForce() {
-          if (!(this.i === 0 || this.i === numCols - 1 || this.j === 0 || this.j === numRows - 1)) {
+          if (
+            !(
+              this.i === 0 ||
+              this.i === numCols - 1 ||
+              this.j === 0 ||
+              this.j === numRows - 1
+            )
+          ) {
             let d = p.dist(wave.x, wave.y, this.x, this.y);
-            let intensity = wave.intensity * Math.exp(-d * d / (wave.delta * wave.delta));
+            let intensity =
+              wave.intensity * Math.exp(-(d * d) / (wave.delta * wave.delta));
             let res = spring_force(wave.x, wave.y, this.x, this.y, intensity);
             this.vx += 0.1 * res.x;
             this.vy += 0.1 * res.y;
@@ -79,10 +95,12 @@ const SpringGridSketch = ({ containerRef, className }) => {
       }
 
       function updateWave() {
-        wave.x += wave.vx;
-        wave.y += wave.vy;
-        if (wave.x <= 0 || wave.x >= p.width) wave.vx *= -1;
-        if (wave.y <= 0 || wave.y >= p.height) wave.vy *= -1;
+        wave.angle += wave.angularVelocity;
+        wave.x += wave.amplitude * Math.cos(wave.angle);
+        wave.y += wave.amplitude * Math.sin(wave.angle);
+        if (wave.x <= 0 || wave.x >= p.width) wave.angle = Math.PI - wave.angle;
+        if (wave.y <= 0 || wave.y >= p.height)
+          wave.angle = -wave.angle;
       }
 
       p.setup = () => {
@@ -151,24 +169,27 @@ const SpringGridSketch = ({ containerRef, className }) => {
     };
   }, [width]);
 
-  useEffect(function resize() {
-    const handleResize = () => {
-      if (containerRef.current) {
-        setWidth(containerRef.current.offsetWidth + widthAdjustment);
-      }
-    };
+  useEffect(
+    function resize() {
+      const handleResize = () => {
+        if (containerRef.current) {
+          setWidth(containerRef.current.offsetWidth + widthAdjustment);
+        }
+      };
 
-    const resizeObserver = new ResizeObserver(handleResize);
-    if (containerRef.current) {
-      resizeObserver.observe(containerRef.current);
-    }
-
-    return () => {
+      const resizeObserver = new ResizeObserver(handleResize);
       if (containerRef.current) {
-        resizeObserver.unobserve(containerRef.current);
+        resizeObserver.observe(containerRef.current);
       }
-    };
-  }, [containerRef]);
+
+      return () => {
+        if (containerRef.current) {
+          resizeObserver.unobserve(containerRef.current);
+        }
+      };
+    },
+    [containerRef]
+  );
 
   return <div className={className} ref={sketchRef}></div>;
 };
