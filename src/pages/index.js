@@ -128,7 +128,7 @@ export default function Home() {
           </ExperienceBlock>
         </div>
         <div className="mt-6 border border-top border-white w-full flex items-center border-x-0 py-6 justify-center">
-          <h3 className="font-fantastique text-2xl">Let's build something <em>great</em> together.</h3>
+          <h3 className="font-fantastique text-2xl">Let&apos;s build something <em>great</em> together.</h3>
         </div>
         <div className="-mt-5 -ml-[22px]">
           <MeshSketch containerRef={containerRef} />
