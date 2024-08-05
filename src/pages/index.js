@@ -42,9 +42,6 @@ export default function Home() {
     <>
     <CustomHead />
     <Navigation />
-    <div className="mt-[230px] h-[540px]">
-      <MeshSketch containerRef={containerRef} />
-    </div>
     <div className="p-6">
       <main className="flex min-h-screen max-w-[1400px] flex-col items-start justify-between lg:mx-auto" ref={containerRef}>
         <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex mt-20 mb-10">
@@ -129,6 +126,9 @@ export default function Home() {
             </p>
             <br/>
           </ExperienceBlock>
+        </div>
+        <div className="mt-0">
+          <MeshSketch containerRef={containerRef} />
         </div>
         <div className="h-96" />
         {/* <CellularAutomotaSketch className="my-40" containerRef={containerRef} /> */}

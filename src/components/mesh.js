@@ -1,5 +1,7 @@
-import React, { useEffect, useState, useRef } from 'react';
-import p5 from 'p5';
+import React, { useEffect, useState, useRef } from "react";
+import p5 from "p5";
+
+// Based on https://bleuje.com/p5js-myprojects/grid-distortion/index.html
 
 const SpringGridSketch = ({ containerRef, className }) => {
   const sketchRef = useRef();
@@ -7,15 +9,26 @@ const SpringGridSketch = ({ containerRef, className }) => {
 
   useEffect(() => {
     const sketch = (p) => {
-      const numRows = 25; // Fixed number of rows
-      const cellSize = 20; // Approximate size of each cell in pixels
+      const numRows = 20; // Fixed number of rows
+      const cellSize = 24; // Approximate size of each cell in pixels
       let numCols;
       let EPS = 0.00000001;
 
       let array = [];
-      
+      let wave = {
+        x: 0,
+        y: 0,
+        vx: 9.0, // Increase from 2 to 2.5 for faster horizontal movement
+        vy: 6.0, // Increase from 1 to 1.5 for faster vertical movement
+        // intensity: 1.995, // Intensity of the wave
+        intensity: 2.2,
+        delta: 100, // Spread of the wave's influence
+    };    
+
       class Dot {
         constructor(i, j, sp) {
+          this.i = i;  // Index in grid horizontally
+          this.j = j;  // Index in grid vertically
           this.vx = 0;
           this.vy = 0;
           this.x = p.map(i, 0, numCols - 1, sp, p.width - sp);
@@ -25,24 +38,29 @@ const SpringGridSketch = ({ containerRef, className }) => {
         }
 
         update() {
-          let d = p.dist(p.mouseX, p.mouseY, this.x, this.y);
-          let delta = sDelta.value();
-          let intensity = sKClick.value() * Math.exp(-d * d / (delta * delta));
-          let res = p.createVector(0, 0);
-
-          if (p.mouseIsPressed) {
-            res.add(spring_force(p.mouseX, p.mouseY, this.x, this.y, intensity));
+          // If dot is on the boundary, prevent it from moving
+          if (this.i === 0 || this.i === numCols - 1 || this.j === 0 || this.j === numRows - 1) {
+            this.vx = 0;
+            this.vy = 0;
+          } else {
+            let res = spring_force(this.x0, this.y0, this.x, this.y, 10.0); // KGrid is 10.0
+            this.vx += 0.1 * res.x; // DT is 0.1
+            this.vy += 0.1 * res.y;
+            this.vx *= 0.98; // Damping
+            this.vy *= 0.98;
+            this.x += 0.1 * this.vx;
+            this.y += 0.1 * this.vy;
           }
-          res.add(spring_force(this.x0, this.y0, this.x, this.y, sKGrid.value()));
+        }
 
-          this.vx += sDT.value() * res.x;
-          this.vy += sDT.value() * res.y;
-
-          this.vx *= sDAMPING.value();
-          this.vy *= sDAMPING.value();
-
-          this.x += sDT.value() * this.vx;
-          this.y += sDT.value() * this.vy;
+        applyWaveForce() {
+          if (!(this.i === 0 || this.i === numCols - 1 || this.j === 0 || this.j === numRows - 1)) {
+            let d = p.dist(wave.x, wave.y, this.x, this.y);
+            let intensity = wave.intensity * Math.exp(-d * d / (wave.delta * wave.delta));
+            let res = spring_force(wave.x, wave.y, this.x, this.y, intensity);
+            this.vx += 0.1 * res.x;
+            this.vy += 0.1 * res.y;
+          }
         }
       }
 
@@ -58,37 +76,38 @@ const SpringGridSketch = ({ containerRef, className }) => {
         return p.createVector(fx, fy);
       }
 
-      let sDT, sDAMPING, sDelta, sKGrid, sKClick;
+      function updateWave() {
+        wave.x += wave.vx;
+        wave.y += wave.vy;
+        if (wave.x <= 0 || wave.x >= p.width) wave.vx *= -1;
+        if (wave.y <= 0 || wave.y >= p.height) wave.vy *= -1;
+      }
 
       p.setup = () => {
-        p.createCanvas(width, numRows * cellSize); // Set canvas height to fit 15 rows
+        p.createCanvas(width, numRows * cellSize); 
         p.background(0);
 
-        // Calculate the number of columns and spacing to maintain square cells
         numCols = Math.floor(p.width / cellSize);
-        let sp = cellSize; // Use cellSize for spacing to ensure square cells
+        let sp = cellSize; 
 
-        // Create sliders
-        sDT = p.createSlider(0.01, 0.4, 0.1, 0.01);
-        sDAMPING = p.createSlider(0.8, 1.0, 0.95, 0.01);
-        sDelta = p.createSlider(5, 100, 40, 1);
-        sKGrid = p.createSlider(2, 25, 10.0, 0.1);
-        sKClick = p.createSlider(2, 25, 15.0, 0.1);
-
-        // Initialize the grid
         for (let i = 0; i < numCols; i++) {
           array[i] = [];
           for (let j = 0; j < numRows; j++) {
             array[i][j] = new Dot(i, j, sp);
           }
         }
+
+        wave.x = p.width / 2;
+        wave.y = p.height / 2;
       };
 
       p.draw = () => {
         p.background(0);
+        updateWave();
 
         for (let i = 0; i < numCols; i++) {
           for (let j = 0; j < numRows; j++) {
+            array[i][j].applyWaveForce();
             array[i][j].update();
           }
         }
@@ -103,13 +122,12 @@ const SpringGridSketch = ({ containerRef, className }) => {
           }
         }
 
-        // Draw connections on the last column and row
         for (let i = 0; i < numCols - 1; i++) {
           let d1 = array[i][numRows - 1];
           let d2 = array[i + 1][numRows - 1];
           draw_connection(d1, d2);
         }
-        
+
         for (let j = 0; j < numRows - 1; j++) {
           let d1 = array[numCols - 1][j];
           let d3 = array[numCols - 1][j + 1];
@@ -140,12 +158,12 @@ const SpringGridSketch = ({ containerRef, className }) => {
 
     const resizeObserver = new ResizeObserver(handleResize);
     if (containerRef.current) {
-      resizeObserver.observe(containerRef.current);
+        resizeObserver.observe(containerRef.current);
     }
 
     return () => {
       if (containerRef.current) {
-        resizeObserver.unobserve(containerRef.current);
+          resizeObserver.unobserve(containerRef.current);
       }
     };
   }, [containerRef]);
