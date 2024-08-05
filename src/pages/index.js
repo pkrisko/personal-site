@@ -60,7 +60,7 @@ export default function Home() {
         </div>
         <div className="h-px w-full bg-white"/>
         <div className="flex justify-center w-full py-6">
-          <h3 className="text-3xl w-fit">Works</h3>
+          <h3 className="text-3xl w-fit font-fantastique">Works</h3>
         </div>
         <div className="h-px w-full bg-white"/>
         <div className="grid lg:grid-cols-3 gap-6 mt-6">
@@ -127,7 +127,10 @@ export default function Home() {
             <br/>
           </ExperienceBlock>
         </div>
-        <div className="mt-0">
+        <div className="mt-6 border border-top border-white w-full flex items-center border-x-0 py-6 justify-center">
+          <h3 className="font-fantastique text-2xl">Let's build something <em>great</em> together.</h3>
+        </div>
+        <div className="-mt-5 -ml-[22px]">
           <MeshSketch containerRef={containerRef} />
         </div>
         <div className="h-96" />

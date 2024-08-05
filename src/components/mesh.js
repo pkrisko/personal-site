@@ -1,11 +1,13 @@
 import React, { useEffect, useState, useRef } from "react";
 import p5 from "p5";
 
-// Based on https://bleuje.com/p5js-myprojects/grid-distortion/index.html
+const widthAdjustment = 44;
+
+// Based on https://bleuje.com/p5js-myprojects/grid-distortion/sketch.js
 
 const SpringGridSketch = ({ containerRef, className }) => {
   const sketchRef = useRef();
-  const [width, setWidth] = useState(containerRef.current.offsetWidth);
+  const [width, setWidth] = useState(containerRef.current.offsetWidth + widthAdjustment);
 
   useEffect(() => {
     const sketch = (p) => {
@@ -23,7 +25,7 @@ const SpringGridSketch = ({ containerRef, className }) => {
         // intensity: 1.995, // Intensity of the wave
         intensity: 2.2,
         delta: 100, // Spread of the wave's influence
-    };    
+      };
 
       class Dot {
         constructor(i, j, sp) {
@@ -84,11 +86,11 @@ const SpringGridSketch = ({ containerRef, className }) => {
       }
 
       p.setup = () => {
-        p.createCanvas(width, numRows * cellSize); 
+        p.createCanvas(width, numRows * cellSize);
         p.background(0);
 
         numCols = Math.floor(p.width / cellSize);
-        let sp = cellSize; 
+        let sp = cellSize;
 
         for (let i = 0; i < numCols; i++) {
           array[i] = [];
@@ -97,8 +99,8 @@ const SpringGridSketch = ({ containerRef, className }) => {
           }
         }
 
-        wave.x = p.width / 2;
-        wave.y = p.height / 2;
+        wave.x = p.random(0, p.width);
+        wave.y = p.random(0, p.height);
       };
 
       p.draw = () => {
@@ -152,18 +154,18 @@ const SpringGridSketch = ({ containerRef, className }) => {
   useEffect(function resize() {
     const handleResize = () => {
       if (containerRef.current) {
-        setWidth(containerRef.current.offsetWidth);
+        setWidth(containerRef.current.offsetWidth + widthAdjustment);
       }
     };
 
     const resizeObserver = new ResizeObserver(handleResize);
     if (containerRef.current) {
-        resizeObserver.observe(containerRef.current);
+      resizeObserver.observe(containerRef.current);
     }
 
     return () => {
       if (containerRef.current) {
-          resizeObserver.unobserve(containerRef.current);
+        resizeObserver.unobserve(containerRef.current);
       }
     };
   }, [containerRef]);
