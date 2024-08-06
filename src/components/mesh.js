@@ -10,6 +10,19 @@ const SpringGridSketch = ({ containerRef, className }) => {
   const [width, setWidth] = useState(
     containerRef.current.offsetWidth + widthAdjustment
   );
+  const [tiltMode, setTiltMode] = useState(false);
+
+  let wave = {
+    x: 0,
+    y: 0,
+    tiltX: 0,
+    tiltY: 0,
+    angle: 0, // Initial angle
+    angularVelocity: 0.005, // Rate of change of the angle
+    amplitude: 9.0, // Amplitude of the wave's velocity
+    intensity: 3.2,
+    delta: 70, // Spread of the wave's influence
+  };
 
   useEffect(() => {
     const sketch = (p) => {
@@ -19,16 +32,6 @@ const SpringGridSketch = ({ containerRef, className }) => {
       let EPS = 0.00000001;
 
       let array = [];
-      let wave = {
-        x: 0,
-        y: 0,
-        angle: 0, // Initial angle
-        angularVelocity: 0.005, // Rate of change of the angle
-        amplitude: 9.0, // Amplitude of the wave's velocity
-        // intensity: 1.995, // Intensity of the wave
-        intensity: 3.2,
-        delta: 70, // Spread of the wave's influence
-      };
 
       class Dot {
         constructor(i, j, sp) {
@@ -60,6 +63,12 @@ const SpringGridSketch = ({ containerRef, className }) => {
             this.vy *= 0.98;
             this.x += 0.1 * this.vx;
             this.y += 0.1 * this.vy;
+
+            // Apply tilt effect if tilt mode is enabled
+            if (tiltMode) {
+              this.vx += wave.tiltX * 0.05;
+              this.vy += wave.tiltY * 0.05;
+            }
           }
         }
 
@@ -99,8 +108,7 @@ const SpringGridSketch = ({ containerRef, className }) => {
         wave.x += wave.amplitude * Math.cos(wave.angle);
         wave.y += wave.amplitude * Math.sin(wave.angle);
         if (wave.x <= 0 || wave.x >= p.width) wave.angle = Math.PI - wave.angle;
-        if (wave.y <= 0 || wave.y >= p.height)
-          wave.angle = -wave.angle;
+        if (wave.y <= 0 || wave.y >= p.height) wave.angle = -wave.angle;
       }
 
       p.setup = () => {
@@ -119,6 +127,11 @@ const SpringGridSketch = ({ containerRef, className }) => {
 
         wave.x = p.random(0, p.width);
         wave.y = p.random(0, p.height);
+
+        // Add event listener for device orientation if tilt mode is enabled
+        if (tiltMode && "DeviceOrientationEvent" in window) {
+          window.addEventListener("deviceorientation", handleTilt);
+        }
       };
 
       p.draw = () => {
@@ -167,31 +180,68 @@ const SpringGridSketch = ({ containerRef, className }) => {
     return () => {
       myP5.remove();
     };
-  }, [width]);
+  }, [width, tiltMode]);
 
-  useEffect(
-    function resize() {
-      const handleResize = () => {
-        if (containerRef.current) {
-          setWidth(containerRef.current.offsetWidth + widthAdjustment);
-        }
-      };
-
-      const resizeObserver = new ResizeObserver(handleResize);
-      if (containerRef.current) {
-        resizeObserver.observe(containerRef.current);
+  useEffect(() => {
+    // Request permission for device orientation on iOS 13+ devices
+    const requestPermission = async () => {
+      if (
+        typeof DeviceOrientationEvent !== "undefined" &&
+        typeof DeviceOrientationEvent.requestPermission === "function"
+      ) {
+        const response = await DeviceOrientationEvent.requestPermission();
+        return response === "granted";
       }
+      return true;
+    };
 
-      return () => {
-        if (containerRef.current) {
-          resizeObserver.unobserve(containerRef.current);
+    // Handler to enable or disable tilt mode
+    const handleTiltModeChange = async () => {
+      if (tiltMode) {
+        const permissionGranted = await requestPermission();
+        if (permissionGranted) {
+          window.addEventListener("deviceorientation", handleTilt);
+        } else {
+          alert("Tilt controls not enabled.");
+          setTiltMode(false);
         }
-      };
-    },
-    [containerRef]
-  );
+      } else {
+        window.removeEventListener("deviceorientation", handleTilt);
+        wave.tiltX = 0;
+        wave.tiltY = 0;
+      }
+    };
 
-  return <div className={className} ref={sketchRef}></div>;
+    handleTiltModeChange();
+
+    return () => {
+      window.removeEventListener("deviceorientation", handleTilt);
+    };
+  }, [tiltMode]);
+
+  const handleTilt = (event) => {
+    console.log("wave", wave)
+    wave.tiltX = event.gamma / 2;
+    wave.tiltY = event.beta / 2;
+  };
+
+  return (
+    <div>
+      <div className="flex items-center mb-4">
+        <input
+          type="checkbox"
+          id="tiltMode"
+          checked={tiltMode}
+          onChange={() => setTiltMode(!tiltMode)}
+          className="mr-2"
+        />
+        <label htmlFor="tiltMode" className="text-white">
+          Tilt Mode
+        </label>
+      </div>
+      <div className={className} ref={sketchRef}></div>
+    </div>
+  );
 };
 
 export default SpringGridSketch;
