@@ -6,6 +6,7 @@ import CustomHead from '@/components/customHead';
 import Navigation from '@/components/navigation';
 import ExperienceBlock from '@/components/experienceBlock';
 import Footer from '@/components/footer';
+import Logo from '@/components/logo';
 import dynamic from 'next/dynamic';
 
 const CellularAutomotaSketch = dynamic(
@@ -41,8 +42,9 @@ export default function Home() {
   return (
     <>
     <CustomHead />
-    <Navigation />
-    <div className="p-6">
+    {/* <Navigation /> */}
+    <Logo />
+    {/* <div className="p-6">
       <main className="flex min-h-screen max-w-[1400px] flex-col items-start justify-between lg:mx-auto" ref={containerRef}>
         <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex mt-20 mb-10">
           <h1 className="font-sans text-5xl lg:text-8xl h-24 lg:h-[192px]">{headline1}<br/>{headline2}</h1>
@@ -54,7 +56,6 @@ export default function Home() {
           <br/><br/>
           I love bringing <em>ideas</em> and <em>designs</em> to life. 
         </p>
-        {/* Container with static height to reduce Cumulative Layout Shift */}
         <div className="h-[540px]">
           <RecursiveTreeSketch containerRef={containerRef} />
         </div>
@@ -134,10 +135,9 @@ export default function Home() {
           <MeshSketch containerRef={containerRef} />
         </div>
         <div className="h-96" />
-        {/* <CellularAutomotaSketch className="my-40" containerRef={containerRef} /> */}
         <Footer />
       </main>
-    </div>
+    </div> */}
     </>
   )
 }
