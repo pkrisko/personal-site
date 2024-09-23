@@ -35,6 +35,10 @@ const GlobeScene = () => {
             clampedProgress,
             clampedProgress
           );
+
+          // Make the shapes spin
+          mesh.rotation.y += 0.01; // Adjust rotation speed as needed
+          mesh.rotation.x += 0.005; // Optional: rotate on x-axis as well
         }
       });
     });

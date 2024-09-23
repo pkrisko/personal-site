@@ -7,37 +7,8 @@ import Navigation from '@/components/navigation';
 import ExperienceBlock from '@/components/experienceBlock';
 import Footer from '@/components/footer';
 import Logo from '@/components/logo';
-import dynamic from 'next/dynamic';
-
-const CellularAutomotaSketch = dynamic(
-  () => import('@/components/sketch'),
-  { ssr: false }
-);
-
-const RecursiveTreeSketch = dynamic(
-  () => import('@/components/recursiveTreeSketch'),
-  { ssr: false }
-);
-
-const MeshSketch = dynamic(
-  () => import('@/components/mesh'),
-  { ssr: false }
-);
 
 export default function Home() {
-  const containerRef = useRef(null);
-
-  const [headline1] = useTypingHeadlines([
-    'Full-stack',
-    'React.js',
-    'Technical',
-  ]);
-
-  const [headline2] = useTypingHeadlines([
-    'developer',
-    'extraordinaire',
-    'lead.',
-  ]);
 
   return (
     <>
