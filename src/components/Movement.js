@@ -53,7 +53,7 @@ function Movement() {
   return (
     <div className="w-full h-screen relative">
       {/* Directional Pad. Positioned on HTML body, z-index above the canvas. */}
-      <div className="absolute bottom-5 z-10 left-1/2 transform -translate-x-1/2 grid grid-cols-3 gap-4">
+      <div className="absolute bottom-24 lg:bottom-10 z-10 left-1/2 transform -translate-x-1/2 grid grid-cols-3 gap-4">
         <DirectionalButton onClick={() => moveCamera('up')} className="col-start-2 row-start-1">
           <ArrowUp size={32} />
         </DirectionalButton>
