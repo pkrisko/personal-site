@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import Globe from '@/components/globe';
+import Globe from '@/components/Globe';
 
 const Navigation = () => {
   return (

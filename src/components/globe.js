@@ -1,40 +1,19 @@
-import React, { useRef, useState } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
+import React, { useRef } from 'react';
+import { useFrame } from '@react-three/fiber';
 
-const SpinningGlobe = () => {
-  const globeRef = useRef();
-  const [isHovered, setIsHovered] = useState(false);
+const Globe = () => {
+  const globeRef = useRef(null);
 
   useFrame(() => {
-    const speed = isHovered ? .03 : .02;
-    globeRef.current.rotation.y += speed;
-
-    const scale = isHovered ? 1.05 : 1;
-    globeRef.current.scale.set(scale, scale, scale);
+    globeRef.current.rotation.y += 0.0025; 
   });
 
   return (
-    <mesh
-      ref={globeRef}
-      onPointerOver={() => setIsHovered(true)}
-      onPointerOut={() => setIsHovered(false)}
-    >
-      <sphereGeometry args={[2, 6, 6]} />
-      <meshBasicMaterial color="lightblue" wireframe />
+    <mesh ref={globeRef}>
+      <sphereGeometry args={[3, 13, 13]} />
+      <meshStandardMaterial color="white" wireframe />
     </mesh>
   );
 };
 
-const GlobeScene = () => {
-  return (
-    <div className="globe-container w-16 h-16">
-      <Canvas>
-        <ambientLight intensity={0.5} />
-        <pointLight position={[10, 10, 10]} />
-        <SpinningGlobe />
-      </Canvas>
-    </div>
-  );
-};
-
-export default GlobeScene;
+export default Globe;
