@@ -8,23 +8,23 @@ function Gear({
   position = [0, 0, 0],
   rotation = [0, 0, 0],
   numTeeth = 14,
-  radius = null,        // Pitch radius (new parameter)
-  module = 1,           // Module (will be recalculated if radius is provided)
-  numTeeth1 = 5,        // For hypocycloid (pinion)
-  numTeeth2 = 5,        // For epicycloid (wheel)
+  radius = null,        // Pitch radius
+  module = 1,           // Module (recalculated if radius is provided)
+  numTeeth1 = null,     // Hypocycloid generating circle teeth (pinion)
+  numTeeth2 = null,     // Epicycloid generating circle teeth (wheel)
   clearance = 0.25,
   backlash = 0.0,
-  head = 0.0,
   thickness = 0.5,
   rotationSpeed = 0,
   color = 'gray',
+  addendumFactor = 1.0, // New parameter for addendum factor
 }) {
   const mesh = useRef();
 
   const geometry = useMemo(() => {
     const shape = new Shape();
 
-    // Gear calculations based on cycloidal gear design
+    // Gear calculations based on cycloidal gear design according to B.S. 978
 
     let m = module;
     const z = numTeeth;
@@ -35,30 +35,46 @@ function Gear({
       m = D / z;
     }
 
-    const z1 = numTeeth1;
-    const z2 = numTeeth2;
-    const c = clearance;
-    const b = backlash;
-    const h = head;
+    const f_a = addendumFactor;     // Addendum factor (user-defined)
+    const f_r = 1.4 * f_a;          // Equation (18)
+    const a_r = m * f_r;            // Equation (19), addendum radius
+    const f_prac = 0.95 * f_a;      // Equation (21)
+    const a_h = m * f_prac;         // Equation (22), practical addendum height
+    const f_d = 1.25;               // Standard dedendum factor
+    const d_h = m * f_d;            // Dedendum height
 
-    const d = z * m;                 // Pitch diameter
-    const d1 = z1 * m;               // Generating circle diameter for hypocycloid
-    const d2 = z2 * m;               // Generating circle diameter for epicycloid
-    const da = d + 2 * (1 + h) * m;  // Addendum diameter
-    const di = d - 2 * (1 + c) * m;  // Dedendum diameter
+    const d = z * m;                // Pitch diameter
+
+    const da = d + 2 * a_h;         // Addendum diameter
+    const di = d - 2 * d_h;         // Dedendum diameter
+
     const phipart = (2 * Math.PI) / z; // Angle per tooth
-    const angularBacklash = b / (d / 2);
+    const angularBacklash = backlash / (d / 2);
+
+    // Generating circle diameters
+    const z1 = numTeeth1 !== null ? numTeeth1 : z / 2; // Hypocycloid
+    const z2 = numTeeth2 !== null ? numTeeth2 : z / 2; // Epicycloid
+    const d1 = z1 * m;               // Hypocycloid generating circle diameter
+    const d2 = z2 * m;               // Epicycloid generating circle diameter
 
     // Functions for epicycloid and hypocycloid curves
     const epicycloid = (t) => {
-      const x = ((d2 + d) * Math.cos(t)) / 2 - (d2 * Math.cos(((1 + d / d2) * t))) / 2;
-      const y = ((d2 + d) * Math.sin(t)) / 2 - (d2 * Math.sin(((1 + d / d2) * t))) / 2;
+      const x =
+        ((d2 + d) * Math.cos(t)) / 2 -
+        (d2 * Math.cos(((d2 + d) * t) / d2)) / 2;
+      const y =
+        ((d2 + d) * Math.sin(t)) / 2 -
+        (d2 * Math.sin(((d2 + d) * t) / d2)) / 2;
       return new Vector2(x, y);
     };
 
     const hypocycloid = (t) => {
-      const x = ((d - d1) * Math.cos(t)) / 2 + (d1 * Math.cos(((d / d1 - 1) * t))) / 2;
-      const y = ((d - d1) * Math.sin(t)) / 2 - (d1 * Math.sin(((d / d1 - 1) * t))) / 2;
+      const x =
+        ((d - d1) * Math.cos(t)) / 2 +
+        (d1 * Math.cos(((d - d1) * t) / d1)) / 2;
+      const y =
+        ((d - d1) * Math.sin(t)) / 2 -
+        (d1 * Math.sin(((d - d1) * t) / d1)) / 2;
       return new Vector2(x, y);
     };
 
@@ -158,7 +174,7 @@ function Gear({
     const hole = new Shape();
 
     const numSegments = 64;
-    const holeRadius = (d / 2) - 2 * m; // Adjust as needed
+    const holeRadius = d / 2 - 2 * m; // Adjust as needed
     for (let i = 0; i <= numSegments; i++) {
       const angle = (i * 2 * Math.PI) / numSegments;
       const x = holeRadius * Math.cos(angle);
@@ -189,8 +205,8 @@ function Gear({
     numTeeth2,
     clearance,
     backlash,
-    head,
     thickness,
+    addendumFactor, // Added to dependencies
   ]);
 
   // Rotate the gear

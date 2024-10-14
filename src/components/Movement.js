@@ -12,6 +12,7 @@ import Gear from '@/components/Gear';
 import { OrbitControls } from '@react-three/drei';
 import CameraController from '@/components/CameraController';
 import DirectionalButton from '@/components/DirectionalButton';
+import EscapementWheel from '@/components/EscapementWheel';
 
 function Movement() {
   const controlsRef = useRef();
@@ -49,67 +50,84 @@ function Movement() {
   const gearTwoTeethCount = 30;
   const baseRotationSpeed = 0.5;
   const gearTwoRotationalVelocity =
-  -((gearOneTeethCount / gearTwoTeethCount) * baseRotationSpeed);
+    -((gearOneTeethCount / gearTwoTeethCount) * baseRotationSpeed);
 
   return (
     <div className="w-full h-screen relative">
-      {/* Directional Pad. Positioned on HTML body, z-index above the canvas. */}
+      {/* Directional Pad */}
       <div className="absolute bottom-24 lg:bottom-10 z-10 left-1/2 transform -translate-x-1/2 grid grid-cols-3 gap-4">
-        <DirectionalButton onClick={() => moveCamera('up')} className="col-start-2 row-start-1">
+        <DirectionalButton
+          onClick={() => moveCamera('up')}
+          className="col-start-2 row-start-1"
+        >
           <ArrowUp size={32} />
         </DirectionalButton>
-        <DirectionalButton onClick={() => moveCamera('left')} className="col-start-1 row-start-2">
+        <DirectionalButton
+          onClick={() => moveCamera('left')}
+          className="col-start-1 row-start-2"
+        >
           <ArrowLeft size={32} />
         </DirectionalButton>
-        <DirectionalButton onClick={() => moveCamera('down')} className="col-start-2 row-start-2">
+        <DirectionalButton
+          onClick={() => moveCamera('down')}
+          className="col-start-2 row-start-2"
+        >
           <ArrowDown size={32} />
         </DirectionalButton>
-        <DirectionalButton onClick={() => moveCamera('right')} className="col-start-3 row-start-2">
+        <DirectionalButton
+          onClick={() => moveCamera('right')}
+          className="col-start-3 row-start-2"
+        >
           <ArrowRight size={32} />
         </DirectionalButton>
       </div>
 
       <Canvas shadows camera={{ position: [0, 0, 100], fov: 60 }}>
-        <CameraController
-          moveCamera={moveCamera}
-          controlsRef={controlsRef}
-        />
+        <CameraController moveCamera={moveCamera} controlsRef={controlsRef} />
 
         {/* Lighting */}
         <ambientLight intensity={0.5} />
-        <directionalLight
-          position={[10, 10, 10]}
-          intensity={1}
-          castShadow
-        />
+        <directionalLight position={[10, 10, 10]} intensity={1} castShadow />
 
         {/* Gears */}
-        {/* Escapement Gear */}
+        {/* Gear One */}
         <Gear
           position={[0, 0, 0]}
           numTeeth={gearOneTeethCount}
-          radius={10}            // Set the pitch radius to 20 units
+          radius={10} // Pitch radius
           clearance={0.0}
           backlash={0.0}
-          head={0.5}
           thickness={2}
           rotationSpeed={baseRotationSpeed}
           color="silver"
+          addendumFactor={1.5} // As per B.S. 978
         />
+        {/* Gear Two */}
         <Gear
-          position={[30.1, 6.4, 0]}
+          position={[29.9, 6.35, 0]}
           numTeeth={gearTwoTeethCount}
-          radius={20}
-          numTeeth1={20}         // Adjust as needed
-          numTeeth2={20}         // Adjust as needed
+          radius={20} // Pitch radius
+          numTeeth1={gearOneTeethCount} // For correct meshing
+          numTeeth2={gearTwoTeethCount} // For correct meshing
           clearance={0.0}
           backlash={0.0}
-          head={0.5}
           thickness={2}
           rotationSpeed={gearTwoRotationalVelocity}
           color="teal"
+          addendumFactor={1.5} // As per B.S. 978
         />
-        {/* Zoom Controls */}
+
+        <EscapementWheel
+          position={[0, 0, -1]}
+          numTeeth={30}
+          radius={20}
+          toothHeight={5}
+          thickness={2}
+          rotationSpeed={0.5}
+          color="gold"
+        />
+
+        {/* Orbit Controls */}
         <OrbitControls ref={controlsRef} enableZoom={true} />
       </Canvas>
     </div>
