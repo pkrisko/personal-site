@@ -84,25 +84,23 @@ function Movement() {
 
         {/* Gears */}
         <Gear
-          position={[-2.5, 0, 0]}
-          radius={20}
-          innerRadius={19}
-          teeth={gearOneTeethCount}
-          toothDepth={1}
-          thickness={2}
-          rotationSpeed={baseRotationSpeed}
-          color="silver"
-        />
-        <Gear
-          position={[-29.7, 1, 0]}
-          radius={6}
-          innerRadius={5}
-          teeth={gearTwoTeethCount}
-          toothDepth={1}
-          thickness={2}
-          rotationSpeed={gearTwoRotationalVelocity}
-          color="teal"
-        />
+  position={[-2.5, 0, 0]}
+  module={0.5}
+  teeth={gearOneTeethCount}
+  thickness={2}
+  boreRadius={1}
+  rotationSpeed={baseRotationSpeed}
+  color="silver"
+/>
+<Gear
+  position={[-10, 0, 0]}
+  module={0.5}
+  teeth={gearTwoTeethCount}
+  thickness={2}
+  boreRadius={0.5}
+  rotationSpeed={gearTwoRotationalVelocity}
+  color="teal"
+/>
 
         {/* Zoom Controls */}
         <OrbitControls ref={controlsRef} enableZoom={true} />

@@ -7,38 +7,38 @@ import { useFrame } from '@react-three/fiber';
 function Gear({
   position = [0, 0, 0],
   rotation = [0, 0, 0],
-  radius = 1,
-  innerRadius = 0.5,
+  module = 1,
   teeth = 20,
-  toothDepth = 0.2,
   thickness = 0.5,
+  boreRadius = 0.5,
   rotationSpeed = 0,
   color = 'gray',
 }) {
   const mesh = useRef();
 
-  // Gear geometry with a donut hole
+  // Gear geometry
   const geometry = useMemo(() => {
     const shape = new Shape();
 
-    const numTeeth = teeth;
-    const outerRadius = radius + toothDepth;
-    const anglePerTooth = (Math.PI * 2) / numTeeth;
+    const n = teeth; // Number of teeth
+    const m = module; // Module
+    const pitchRadius = (n * m) / 2; // Pitch circle radius
+    const addendumRadius = pitchRadius + m; // Addendum circle radius
+    const dedendumRadius = pitchRadius - 1.25 * m; // Dedendum circle radius
 
-    // Outer gear shape teeth
-    for (let i = 0; i < numTeeth; i++) {
-      const angle = i * anglePerTooth;
-      const nextAngle = (i + 1) * anglePerTooth;
-      const midAngle = angle + anglePerTooth / 2;
+    const angularPitch = (2 * Math.PI) / n;
+    const halfToothAngle = angularPitch / 2;
 
-      const x1 = radius * Math.cos(angle);
-      const y1 = radius * Math.sin(angle);
+    for (let i = 0; i < n; i++) {
+      const angle = i * angularPitch;
 
-      const x2 = outerRadius * Math.cos(midAngle);
-      const y2 = outerRadius * Math.sin(midAngle);
+      // Calculate points for the tooth
+      const theta1 = angle - halfToothAngle; // Start of tooth
+      const theta2 = angle + halfToothAngle; // End of tooth
 
-      const x3 = radius * Math.cos(nextAngle);
-      const y3 = radius * Math.sin(nextAngle);
+      // Move to dedendum circle at theta1
+      const x1 = dedendumRadius * Math.cos(theta1);
+      const y1 = dedendumRadius * Math.sin(theta1);
 
       if (i === 0) {
         shape.moveTo(x1, y1);
@@ -46,30 +46,45 @@ function Gear({
         shape.lineTo(x1, y1);
       }
 
-      shape.lineTo(x2, y2);
-      shape.lineTo(x3, y3);
+      // Left flank from dedendum to addendum
+      shape.quadraticCurveTo(
+        pitchRadius * Math.cos(theta1),
+        pitchRadius * Math.sin(theta1),
+        addendumRadius * Math.cos(angle),
+        addendumRadius * Math.sin(angle)
+      );
+
+      // Right flank from addendum to dedendum
+      shape.quadraticCurveTo(
+        pitchRadius * Math.cos(theta2),
+        pitchRadius * Math.sin(theta2),
+        dedendumRadius * Math.cos(theta2),
+        dedendumRadius * Math.sin(theta2)
+      );
     }
 
     shape.closePath();
 
-    // Hole in the center
-    const hole = new Path();
-    const numSegments = 32;
-    const anglePerSegment = (Math.PI * 2) / numSegments;
+    // Hole in the center (bore)
+    if (boreRadius > 0) {
+      const hole = new Path();
+      const numSegments = 32;
+      const anglePerSegment = (Math.PI * 2) / numSegments;
 
-    for (let i = 0; i <= numSegments; i++) {
-      const angle = i * anglePerSegment;
-      const x = innerRadius * Math.cos(angle);
-      const y = innerRadius * Math.sin(angle);
+      for (let i = 0; i <= numSegments; i++) {
+        const angle = i * anglePerSegment;
+        const x = boreRadius * Math.cos(angle);
+        const y = boreRadius * Math.sin(angle);
 
-      if (i === 0) {
-        hole.moveTo(x, y);
-      } else {
-        hole.lineTo(x, y);
+        if (i === 0) {
+          hole.moveTo(x, y);
+        } else {
+          hole.lineTo(x, y);
+        }
       }
-    }
 
-    shape.holes.push(hole);
+      shape.holes.push(hole);
+    }
 
     const extrudeSettings = {
       steps: 1,
@@ -78,7 +93,7 @@ function Gear({
     };
 
     return new ExtrudeGeometry(shape, extrudeSettings);
-  }, [radius, innerRadius, teeth, toothDepth, thickness]);
+  }, [module, teeth, thickness, boreRadius]);
 
   // Rotate the gear
   useFrame((_, delta) => {
