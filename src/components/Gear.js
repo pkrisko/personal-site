@@ -8,9 +8,10 @@ function Gear({
   position = [0, 0, 0],
   rotation = [0, 0, 0],
   numTeeth = 14,
-  module = 1,
-  numTeeth1 = 5,      // For hypocycloid (pinion)
-  numTeeth2 = 5,      // For epicycloid (wheel)
+  radius = null,        // Pitch radius (new parameter)
+  module = 1,           // Module (will be recalculated if radius is provided)
+  numTeeth1 = 5,        // For hypocycloid (pinion)
+  numTeeth2 = 5,        // For epicycloid (wheel)
   clearance = 0.25,
   backlash = 0.0,
   head = 0.0,
@@ -24,8 +25,16 @@ function Gear({
     const shape = new Shape();
 
     // Gear calculations based on cycloidal gear design
-    const m = module;
+
+    let m = module;
     const z = numTeeth;
+
+    // If radius is provided, calculate module
+    if (radius !== null) {
+      const D = radius * 2; // Pitch diameter
+      m = D / z;
+    }
+
     const z1 = numTeeth1;
     const z2 = numTeeth2;
     const c = clearance;
@@ -37,7 +46,6 @@ function Gear({
     const d2 = z2 * m;               // Generating circle diameter for epicycloid
     const da = d + 2 * (1 + h) * m;  // Addendum diameter
     const di = d - 2 * (1 + c) * m;  // Dedendum diameter
-    const phi = m * Math.PI;         // Circular pitch
     const phipart = (2 * Math.PI) / z; // Angle per tooth
     const angularBacklash = b / (d / 2);
 
@@ -56,25 +64,23 @@ function Gear({
 
     // Calculate start and end parameters for the tooth profile
     const innerEnd = () => {
-      return -(
-        (d1 *
-          Math.acos(
-            (2 * d1 ** 2 - di ** 2 - 2 * d1 * d + d ** 2) /
-              (2 * d1 * (d1 - d))
-          )) /
-        d
-      );
+      const numerator = 2 * d1 ** 2 - di ** 2 - 2 * d1 * d + d ** 2;
+      const denominator = 2 * d1 * (d1 - d);
+      const ratio = numerator / denominator;
+      if (ratio < -1 || ratio > 1) {
+        console.warn('Invalid value for innerEnd acos argument:', ratio);
+      }
+      return -((d1 * Math.acos(Math.max(-1, Math.min(1, ratio)))) / d);
     };
 
     const outerEnd = () => {
-      return (
-        (d2 *
-          Math.acos(
-            (2 * d2 ** 2 - da ** 2 + 2 * d2 * d + d ** 2) /
-              (2 * d2 * (d2 + d))
-          )) /
-        d
-      );
+      const numerator = 2 * d2 ** 2 - da ** 2 + 2 * d2 * d + d ** 2;
+      const denominator = 2 * d2 * (d2 + d);
+      const ratio = numerator / denominator;
+      if (ratio < -1 || ratio > 1) {
+        console.warn('Invalid value for outerEnd acos argument:', ratio);
+      }
+      return ((d2 * Math.acos(Math.max(-1, Math.min(1, ratio)))) / d);
     };
 
     // Generate the tooth profile points
@@ -152,10 +158,11 @@ function Gear({
     const hole = new Shape();
 
     const numSegments = 64;
+    const holeRadius = (d / 2) - 2 * m; // Adjust as needed
     for (let i = 0; i <= numSegments; i++) {
       const angle = (i * 2 * Math.PI) / numSegments;
-      const x = (d / 2 - 2 * m) * Math.cos(angle);
-      const y = (d / 2 - 2 * m) * Math.sin(angle);
+      const x = holeRadius * Math.cos(angle);
+      const y = holeRadius * Math.sin(angle);
 
       if (i === 0) {
         hole.moveTo(x, y);
@@ -176,6 +183,7 @@ function Gear({
     return new ExtrudeGeometry(shape, extrudeSettings);
   }, [
     numTeeth,
+    radius,
     module,
     numTeeth1,
     numTeeth2,
