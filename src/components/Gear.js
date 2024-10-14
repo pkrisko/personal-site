@@ -1,91 +1,172 @@
 'use client';
 
 import React, { useRef, useMemo } from 'react';
-import { Shape, ExtrudeGeometry, Path } from 'three';
+import { Shape, ExtrudeGeometry, Vector2 } from 'three';
 import { useFrame } from '@react-three/fiber';
 
 function Gear({
   position = [0, 0, 0],
   rotation = [0, 0, 0],
+  numTeeth = 14,
   module = 1,
-  teeth = 20,
+  numTeeth1 = 5,      // For hypocycloid (pinion)
+  numTeeth2 = 5,      // For epicycloid (wheel)
+  clearance = 0.25,
+  backlash = 0.0,
+  head = 0.0,
   thickness = 0.5,
-  boreRadius = 0.5,
   rotationSpeed = 0,
   color = 'gray',
 }) {
   const mesh = useRef();
 
-  // Gear geometry
   const geometry = useMemo(() => {
     const shape = new Shape();
 
-    const n = teeth; // Number of teeth
-    const m = module; // Module
-    const pitchRadius = (n * m) / 2; // Pitch circle radius
-    const addendumRadius = pitchRadius + m; // Addendum circle radius
-    const dedendumRadius = pitchRadius - 1.25 * m; // Dedendum circle radius
+    // Gear calculations based on cycloidal gear design
+    const m = module;
+    const z = numTeeth;
+    const z1 = numTeeth1;
+    const z2 = numTeeth2;
+    const c = clearance;
+    const b = backlash;
+    const h = head;
 
-    const angularPitch = (2 * Math.PI) / n;
-    const halfToothAngle = angularPitch / 2;
+    const d = z * m;                 // Pitch diameter
+    const d1 = z1 * m;               // Generating circle diameter for hypocycloid
+    const d2 = z2 * m;               // Generating circle diameter for epicycloid
+    const da = d + 2 * (1 + h) * m;  // Addendum diameter
+    const di = d - 2 * (1 + c) * m;  // Dedendum diameter
+    const phi = m * Math.PI;         // Circular pitch
+    const phipart = (2 * Math.PI) / z; // Angle per tooth
+    const angularBacklash = b / (d / 2);
 
-    for (let i = 0; i < n; i++) {
-      const angle = i * angularPitch;
+    // Functions for epicycloid and hypocycloid curves
+    const epicycloid = (t) => {
+      const x = ((d2 + d) * Math.cos(t)) / 2 - (d2 * Math.cos(((1 + d / d2) * t))) / 2;
+      const y = ((d2 + d) * Math.sin(t)) / 2 - (d2 * Math.sin(((1 + d / d2) * t))) / 2;
+      return new Vector2(x, y);
+    };
 
-      // Calculate points for the tooth
-      const theta1 = angle - halfToothAngle; // Start of tooth
-      const theta2 = angle + halfToothAngle; // End of tooth
+    const hypocycloid = (t) => {
+      const x = ((d - d1) * Math.cos(t)) / 2 + (d1 * Math.cos(((d / d1 - 1) * t))) / 2;
+      const y = ((d - d1) * Math.sin(t)) / 2 - (d1 * Math.sin(((d / d1 - 1) * t))) / 2;
+      return new Vector2(x, y);
+    };
 
-      // Move to dedendum circle at theta1
-      const x1 = dedendumRadius * Math.cos(theta1);
-      const y1 = dedendumRadius * Math.sin(theta1);
+    // Calculate start and end parameters for the tooth profile
+    const innerEnd = () => {
+      return -(
+        (d1 *
+          Math.acos(
+            (2 * d1 ** 2 - di ** 2 - 2 * d1 * d + d ** 2) /
+              (2 * d1 * (d1 - d))
+          )) /
+        d
+      );
+    };
 
-      if (i === 0) {
-        shape.moveTo(x1, y1);
-      } else {
-        shape.lineTo(x1, y1);
+    const outerEnd = () => {
+      return (
+        (d2 *
+          Math.acos(
+            (2 * d2 ** 2 - da ** 2 + 2 * d2 * d + d ** 2) /
+              (2 * d2 * (d2 + d))
+          )) /
+        d
+      );
+    };
+
+    // Generate the tooth profile points
+    const generateToothProfile = () => {
+      const tInnerEnd = innerEnd();
+      const tOuterEnd = outerEnd();
+      const numPoints = 20; // Increase for smoother curves
+
+      const tValsOuter = [];
+      const tValsInner = [];
+
+      for (let i = 0; i <= numPoints; i++) {
+        tValsOuter.push((tOuterEnd * i) / numPoints);
+        tValsInner.push(tInnerEnd + ((0 - tInnerEnd) * i) / numPoints);
       }
 
-      // Left flank from dedendum to addendum
-      shape.quadraticCurveTo(
-        pitchRadius * Math.cos(theta1),
-        pitchRadius * Math.sin(theta1),
-        addendumRadius * Math.cos(angle),
-        addendumRadius * Math.sin(angle)
-      );
+      const ptsOuter = tValsOuter.map((t) => epicycloid(t));
+      const ptsInner = tValsInner.map((t) => hypocycloid(t));
 
-      // Right flank from addendum to dedendum
-      shape.quadraticCurveTo(
-        pitchRadius * Math.cos(theta2),
-        pitchRadius * Math.sin(theta2),
-        dedendumRadius * Math.cos(theta2),
-        dedendumRadius * Math.sin(theta2)
-      );
+      // Combine inner and outer points
+      let toothProfile = [...ptsInner.slice(0, -1), ...ptsOuter];
+
+      // Rotate and apply backlash
+      const rotationAngle = -phipart / 4 + angularBacklash / 2;
+      const cosTheta = Math.cos(rotationAngle);
+      const sinTheta = Math.sin(rotationAngle);
+
+      toothProfile = toothProfile.map((pt) => {
+        return new Vector2(
+          pt.x * cosTheta - pt.y * sinTheta,
+          pt.x * sinTheta + pt.y * cosTheta
+        );
+      });
+
+      // Reflect to get the other side of the tooth
+      const reflectedProfile = toothProfile
+        .map((pt) => new Vector2(pt.x, -pt.y))
+        .reverse();
+
+      // Combine profiles
+      const fullTooth = [...toothProfile, ...reflectedProfile];
+
+      return fullTooth;
+    };
+
+    // Generate the full gear by rotating the tooth profile
+    const toothProfile = generateToothProfile();
+
+    for (let i = 0; i < z; i++) {
+      const angle = (i * 2 * Math.PI) / z;
+      const cosAngle = Math.cos(angle);
+      const sinAngle = Math.sin(angle);
+
+      const rotatedTooth = toothProfile.map((pt) => {
+        return new Vector2(
+          pt.x * cosAngle - pt.y * sinAngle,
+          pt.x * sinAngle + pt.y * cosAngle
+        );
+      });
+
+      if (i === 0) {
+        shape.moveTo(rotatedTooth[0].x, rotatedTooth[0].y);
+      } else {
+        shape.lineTo(rotatedTooth[0].x, rotatedTooth[0].y);
+      }
+
+      rotatedTooth.forEach((pt) => {
+        shape.lineTo(pt.x, pt.y);
+      });
     }
 
     shape.closePath();
 
-    // Hole in the center (bore)
-    if (boreRadius > 0) {
-      const hole = new Path();
-      const numSegments = 32;
-      const anglePerSegment = (Math.PI * 2) / numSegments;
+    // Create the hole in the center
+    const hole = new Shape();
 
-      for (let i = 0; i <= numSegments; i++) {
-        const angle = i * anglePerSegment;
-        const x = boreRadius * Math.cos(angle);
-        const y = boreRadius * Math.sin(angle);
+    const numSegments = 64;
+    for (let i = 0; i <= numSegments; i++) {
+      const angle = (i * 2 * Math.PI) / numSegments;
+      const x = (d / 2 - 2 * m) * Math.cos(angle);
+      const y = (d / 2 - 2 * m) * Math.sin(angle);
 
-        if (i === 0) {
-          hole.moveTo(x, y);
-        } else {
-          hole.lineTo(x, y);
-        }
+      if (i === 0) {
+        hole.moveTo(x, y);
+      } else {
+        hole.lineTo(x, y);
       }
-
-      shape.holes.push(hole);
     }
 
+    shape.holes.push(hole);
+
+    // Extrude settings
     const extrudeSettings = {
       steps: 1,
       depth: thickness,
@@ -93,7 +174,16 @@ function Gear({
     };
 
     return new ExtrudeGeometry(shape, extrudeSettings);
-  }, [module, teeth, thickness, boreRadius]);
+  }, [
+    numTeeth,
+    module,
+    numTeeth1,
+    numTeeth2,
+    clearance,
+    backlash,
+    head,
+    thickness,
+  ]);
 
   // Rotate the gear
   useFrame((_, delta) => {

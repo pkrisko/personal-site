@@ -45,10 +45,12 @@ function Movement() {
   };
 
   // Calculate rotation speeds based on teeth count
-  const gearOneTeethCount = 80;
-  const gearTwoTeethCount = 24;
+  const gearOneTeethCount = 15;
+  const gearTwoTeethCount = 30;
   const baseRotationSpeed = 0.5;
-  const gearTwoRotationalVelocity = -((gearOneTeethCount / gearTwoTeethCount) * baseRotationSpeed);
+  const module = 0.75;
+  const gearTwoRotationalVelocity =
+  -((gearOneTeethCount / gearTwoTeethCount) * baseRotationSpeed);
 
   return (
     <div className="w-full h-screen relative">
@@ -84,24 +86,28 @@ function Movement() {
 
         {/* Gears */}
         <Gear
-  position={[-2.5, 0, 0]}
-  module={0.5}
-  teeth={gearOneTeethCount}
+  position={[0, 0, 0]}
+  // teethCount={80}
+  numTeeth={gearOneTeethCount}
+  module={2}  // Adjust this to change the size of the gear
+  // numTeeth1={10}
+  // numTeeth2={10}
+  clearance={0.0}
+  backlash={0.0}
+  head={0.0}
   thickness={2}
-  boreRadius={1}
   rotationSpeed={baseRotationSpeed}
   color="silver"
 />
+
 <Gear
-  position={[-10, 0, 0]}
-  module={0.5}
-  teeth={gearTwoTeethCount}
+  position={[30, 1, 0]}
+  teethCount={gearTwoTeethCount}
+  module={2}  // Use the same module for meshing gears
   thickness={2}
-  boreRadius={0.5}
   rotationSpeed={gearTwoRotationalVelocity}
   color="teal"
 />
-
         {/* Zoom Controls */}
         <OrbitControls ref={controlsRef} enableZoom={true} />
       </Canvas>
