@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React, { forwardRef, useMemo } from 'react';
 import { Shape, ExtrudeGeometry, Vector2 } from 'three';
 
-const Gear = React.forwardRef(
+const Gear = forwardRef(
   (
     {
       position = [0, 0, 0],
@@ -221,5 +221,7 @@ const Gear = React.forwardRef(
     </mesh>
   );
 });
+
+Gear.displayName = 'Gear';
 
 export default Gear;

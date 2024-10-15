@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React, { forwardRef, useMemo } from 'react';
 import { Shape, ExtrudeGeometry, MathUtils } from 'three';
 import Gear from '@/components/watch/Gear';
 
-const EscapementWheel = React.forwardRef(
+const EscapementWheel = forwardRef(
   (
     {
       position = [0, 0, 0],
@@ -169,5 +169,7 @@ const EscapementWheel = React.forwardRef(
     </>
   );
 });
+
+EscapementWheel.displayName = 'EscapementWheel';
 
 export default EscapementWheel;
