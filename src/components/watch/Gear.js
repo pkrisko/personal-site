@@ -4,7 +4,7 @@ import React, { useRef, useMemo } from 'react';
 import { Shape, ExtrudeGeometry, Vector2 } from 'three';
 import { useFrame } from '@react-three/fiber';
 
-function Gear({
+const Gear = ({
   position = [0, 0, 0],
   rotation = [0, 0, 0],
   numTeeth = 14,
@@ -18,7 +18,7 @@ function Gear({
   rotationSpeed = 0,
   color = 'gray',
   addendumFactor = 1.0, // New parameter for addendum factor
-}) {
+}) => {
   const mesh = useRef();
 
   const geometry = useMemo(() => {
@@ -37,7 +37,6 @@ function Gear({
 
     const f_a = addendumFactor;     // Addendum factor (user-defined)
     const f_r = 1.4 * f_a;          // Equation (18)
-    const a_r = m * f_r;            // Equation (19), addendum radius
     const f_prac = 0.95 * f_a;      // Equation (21)
     const a_h = m * f_prac;         // Equation (22), practical addendum height
     const f_d = 1.25;               // Standard dedendum factor

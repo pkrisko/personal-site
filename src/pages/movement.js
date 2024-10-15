@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import Movement from '@/components/Movement';
+import MovementCanvas from '@/components/watch/MovementCanvas';
 
 export default function MovementPage() {
-  return <Movement />;
+  return <MovementCanvas />;
 }

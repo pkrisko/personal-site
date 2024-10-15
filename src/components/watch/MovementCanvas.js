@@ -8,13 +8,12 @@ import {
   ArrowUp,
 } from '@phosphor-icons/react';
 import { Canvas } from '@react-three/fiber';
-import Gear from '@/components/Gear';
 import { OrbitControls } from '@react-three/drei';
-import CameraController from '@/components/CameraController';
-import DirectionalButton from '@/components/DirectionalButton';
-import EscapementWheel from '@/components/EscapementWheel';
+import CameraController from '@/components/watch/CameraController';
+import DirectionalButton from '@/components/watch/DirectionalButton';
+import Movement from '@/components/watch/Movement';
 
-function Movement() {
+const MovementCanvas = () => {
   const controlsRef = useRef();
 
   const moveCamera = (direction) => {
@@ -44,13 +43,6 @@ function Movement() {
     }
     controls.update();
   };
-
-  // Calculate rotation speeds based on teeth count
-  const gearOneTeethCount = 15;
-  const gearTwoTeethCount = 30;
-  const baseRotationSpeed = 0.5;
-  const gearTwoRotationalVelocity =
-    -((gearOneTeethCount / gearTwoTeethCount) * baseRotationSpeed);
 
   return (
     <div className="w-full h-screen relative">
@@ -89,45 +81,8 @@ function Movement() {
         <ambientLight intensity={0.5} />
         <directionalLight position={[10, 10, 10]} intensity={1} castShadow />
 
-        {/* Gears */}
-        {/* Gear One */}
-        <Gear
-          position={[0, 0, 0]}
-          numTeeth={gearOneTeethCount}
-          radius={5.0} // Pitch radius
-          clearance={0.0}
-          backlash={0.0}
-          thickness={2}
-          module={3}
-          rotationSpeed={baseRotationSpeed}
-          color="silver"
-          addendumFactor={1.5} // As per B.S. 978
-        />
-        {/* Gear Two */}
-        <Gear
-          position={[15.7, 3.3, 0]}
-          numTeeth={gearTwoTeethCount}
-          radius={10.5} // Pitch radius
-          numTeeth1={gearOneTeethCount} // For correct meshing
-          numTeeth2={gearTwoTeethCount} // For correct meshing
-          clearance={0.0}
-          backlash={0.0}
-          thickness={2}
-          rotationSpeed={gearTwoRotationalVelocity}
-          color="teal"
-          module={3}
-          addendumFactor={1.75} // As per B.S. 978
-        />
-
-        <EscapementWheel
-          position={[0, 0, -2]}
-          numTeeth={30}
-          radius={27}
-          toothHeight={7.5}
-          thickness={2}
-          rotationSpeed={0.5}
-          color="gray"
-        />
+        {/* Watch Movement Meshes  */}
+        <Movement />
 
         {/* Orbit Controls */}
         <OrbitControls ref={controlsRef} enableZoom={true} />
@@ -136,4 +91,4 @@ function Movement() {
   );
 }
 
-export default Movement;
+export default MovementCanvas;

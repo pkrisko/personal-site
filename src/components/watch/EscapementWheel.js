@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useRef, useMemo, useEffect } from 'react';
-import { Shape, ExtrudeGeometry, Vector2, MathUtils } from 'three';
+import { Shape, ExtrudeGeometry, MathUtils } from 'three';
 import { useFrame } from '@react-three/fiber';
+import Gear from '@/components/watch/Gear';
 
 function EscapementWheel({
   position = [0, 0, 0],
@@ -10,7 +11,6 @@ function EscapementWheel({
   numTeeth = 30,
   radius = 10,
   toothHeight = 3,
-  toothWidth = 2,
   thickness = 0.5,
   period = 1, // Period in seconds
   tickDuration = 0.1, // Duration of rotation in seconds
@@ -23,8 +23,8 @@ function EscapementWheel({
 
     const anglePerTooth = (2 * Math.PI) / numTeeth;
 
-    const liftAngleDegrees = 7.5; // Adjust this to change the angle of the tooth rise
-    const gapAngleDegrees = 6; // Adjust this to change the gap between teeth
+    const liftAngleDegrees = 7.5; // Angle of the tooth rise
+    const gapAngleDegrees = 6; // Gap between teeth, tooth width
 
     const liftAngleOffset = MathUtils.degToRad(liftAngleDegrees);
     const gapAngleOffset = MathUtils.degToRad(gapAngleDegrees);
@@ -90,7 +90,7 @@ function EscapementWheel({
     shape.holes.push(axleHole);
 
     // Create the holes between spokes
-    const numSpokes = 8;
+    const numSpokes = 13;
     const spokeAngleDegrees = 10; // Width of the spokes in degrees
     const spokeAngleRadians = MathUtils.degToRad(spokeAngleDegrees);
     const anglePerSpoke = (2 * Math.PI) / numSpokes;
@@ -183,16 +183,29 @@ function EscapementWheel({
   });
 
   return (
-    <mesh
-      ref={mesh}
-      geometry={geometry}
-      position={position}
-      rotation={rotation}
-      castShadow
-      receiveShadow
-    >
-      <meshStandardMaterial color={color} />
-    </mesh>
+    <>
+      <mesh
+        ref={mesh}
+        geometry={geometry}
+        position={position}
+        rotation={rotation}
+        castShadow
+        receiveShadow
+      >
+        <meshStandardMaterial color={color} />
+          <Gear
+          position={[0, 0, 2]}
+          numTeeth={15}
+          radius={5.0}
+          clearance={0.0}
+          backlash={0.0}
+          thickness={2}
+          module={3}
+          color="silver"
+          addendumFactor={1.5}
+        />
+      </mesh>
+    </>
   );
 }
 
