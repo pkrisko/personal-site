@@ -94,19 +94,20 @@ function Movement() {
         <Gear
           position={[0, 0, 0]}
           numTeeth={gearOneTeethCount}
-          radius={10} // Pitch radius
+          radius={5.0} // Pitch radius
           clearance={0.0}
           backlash={0.0}
           thickness={2}
+          module={3}
           rotationSpeed={baseRotationSpeed}
           color="silver"
           addendumFactor={1.5} // As per B.S. 978
         />
         {/* Gear Two */}
         <Gear
-          position={[29.9, 6.35, 0]}
+          position={[15.7, 3.3, 0]}
           numTeeth={gearTwoTeethCount}
-          radius={20} // Pitch radius
+          radius={10.5} // Pitch radius
           numTeeth1={gearOneTeethCount} // For correct meshing
           numTeeth2={gearTwoTeethCount} // For correct meshing
           clearance={0.0}
@@ -114,17 +115,18 @@ function Movement() {
           thickness={2}
           rotationSpeed={gearTwoRotationalVelocity}
           color="teal"
-          addendumFactor={1.5} // As per B.S. 978
+          module={3}
+          addendumFactor={1.75} // As per B.S. 978
         />
 
         <EscapementWheel
-          position={[0, 0, -1]}
+          position={[0, 0, -2]}
           numTeeth={30}
-          radius={20}
-          toothHeight={5}
+          radius={27}
+          toothHeight={7.5}
           thickness={2}
           rotationSpeed={0.5}
-          color="gold"
+          color="gray"
         />
 
         {/* Orbit Controls */}
