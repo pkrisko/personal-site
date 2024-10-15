@@ -1,23 +1,22 @@
 'use client';
 
-import React, { useRef, useMemo, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import { Shape, ExtrudeGeometry, MathUtils } from 'three';
-import { useFrame } from '@react-three/fiber';
 import Gear from '@/components/watch/Gear';
 
-function EscapementWheel({
-  position = [0, 0, 0],
-  rotation = [0, 0, 0],
-  numTeeth = 30,
-  radius = 10,
-  toothHeight = 3,
-  thickness = 0.5,
-  period = 1, // Period in seconds
-  tickDuration = 0.1, // Duration of rotation in seconds
-  color = 'gray',
-}) {
-  const mesh = useRef();
-
+const EscapementWheel = React.forwardRef(
+  (
+    {
+      position = [0, 0, 0],
+      rotation = [0, 0, 0],
+      numTeeth = 30,
+      radius = 10,
+      toothHeight = 3,
+      thickness = 0.5,
+      color = 'gray',
+    },
+    ref
+  ) => {
   const geometry = useMemo(() => {
     const shape = new Shape();
 
@@ -144,48 +143,10 @@ function EscapementWheel({
     return new ExtrudeGeometry(shape, extrudeSettings);
   }, [numTeeth, radius, toothHeight, thickness]);
 
-  // New code for ticking rotation
-  const elapsedTime = useRef(0);
-  const currentRotation = useRef(0);
-  const targetRotation = useRef(0);
-  const anglePerTooth = (2 * Math.PI) / numTeeth;
-
-  useEffect(() => {
-    if (mesh.current) {
-      currentRotation.current = mesh.current.rotation.z;
-      targetRotation.current = mesh.current.rotation.z;
-    }
-  }, []);
-
-  useFrame((_, delta) => {
-    if (mesh.current) {
-      elapsedTime.current += delta;
-
-      if (elapsedTime.current >= period) {
-        // Start a new tick
-        elapsedTime.current = 0;
-        // Update the current rotation to target rotation
-        currentRotation.current = targetRotation.current;
-        // Set new target rotation
-        targetRotation.current += anglePerTooth;
-      }
-
-      if (elapsedTime.current <= tickDuration) {
-        // Interpolate rotation from currentRotation to targetRotation over tickDuration
-        const t = elapsedTime.current / tickDuration;
-        const newRotation = currentRotation.current + t * anglePerTooth;
-        mesh.current.rotation.z = newRotation;
-      } else {
-        // Hold at target rotation
-        mesh.current.rotation.z = targetRotation.current;
-      }
-    }
-  });
-
   return (
     <>
       <mesh
-        ref={mesh}
+        ref={ref}
         geometry={geometry}
         position={position}
         rotation={rotation}
@@ -207,6 +168,6 @@ function EscapementWheel({
       </mesh>
     </>
   );
-}
+});
 
 export default EscapementWheel;

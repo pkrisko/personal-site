@@ -1,26 +1,26 @@
 'use client';
 
-import React, { useRef, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { Shape, ExtrudeGeometry, Vector2 } from 'three';
-import { useFrame } from '@react-three/fiber';
 
-const Gear = ({
-  position = [0, 0, 0],
-  rotation = [0, 0, 0],
-  numTeeth = 14,
-  radius = null,        // Pitch radius
-  module = 1,           // Module (recalculated if radius is provided)
-  numTeeth1 = null,     // Hypocycloid generating circle teeth (pinion)
-  numTeeth2 = null,     // Epicycloid generating circle teeth (wheel)
-  clearance = 0.25,
-  backlash = 0.0,
-  thickness = 0.5,
-  rotationSpeed = 0,
-  color = 'gray',
-  addendumFactor = 1.0, // New parameter for addendum factor
-}) => {
-  const mesh = useRef();
-
+const Gear = React.forwardRef(
+  (
+    {
+      position = [0, 0, 0],
+      rotation = [0, 0, 0],
+      numTeeth = 14,
+      radius = null, // Pitch radius
+      module = 1, // Module (recalculated if radius is provided)
+      numTeeth1 = null, // Hypocycloid generating circle teeth (pinion)
+      numTeeth2 = null, // Epicycloid generating circle teeth (wheel)
+      clearance = 0.25,
+      backlash = 0.0,
+      thickness = 0.5,
+      color = 'gray',
+      addendumFactor = 1.0, // New parameter for addendum factor
+    },
+    ref
+  ) => {
   const geometry = useMemo(() => {
     const shape = new Shape();
 
@@ -208,16 +208,9 @@ const Gear = ({
     addendumFactor, // Added to dependencies
   ]);
 
-  // Rotate the gear
-  useFrame((_, delta) => {
-    if (rotationSpeed && mesh.current) {
-      mesh.current.rotation.z += rotationSpeed * delta;
-    }
-  });
-
   return (
     <mesh
-      ref={mesh}
+      ref={ref}
       geometry={geometry}
       position={position}
       rotation={rotation}
@@ -227,6 +220,6 @@ const Gear = ({
       <meshStandardMaterial color={color} />
     </mesh>
   );
-}
+});
 
 export default Gear;
