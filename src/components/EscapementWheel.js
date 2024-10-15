@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useMemo } from 'react';
+import React, { useRef, useMemo, useEffect } from 'react';
 import { Shape, ExtrudeGeometry, Vector2, MathUtils } from 'three';
 import { useFrame } from '@react-three/fiber';
 
@@ -12,7 +12,8 @@ function EscapementWheel({
   toothHeight = 3,
   toothWidth = 2,
   thickness = 0.5,
-  rotationSpeed = 0,
+  period = 1, // Period in seconds
+  tickDuration = 0.1, // Duration of rotation in seconds
   color = 'gray',
 }) {
   const mesh = useRef();
@@ -22,7 +23,7 @@ function EscapementWheel({
 
     const anglePerTooth = (2 * Math.PI) / numTeeth;
 
-    const liftAngleDegrees = 7.5; // Adjust this to change the angle of the tooth rise (100º-110º)
+    const liftAngleDegrees = 7.5; // Adjust this to change the angle of the tooth rise
     const gapAngleDegrees = 6; // Adjust this to change the gap between teeth
 
     const liftAngleOffset = MathUtils.degToRad(liftAngleDegrees);
@@ -96,7 +97,7 @@ function EscapementWheel({
     const halfSpokeAngle = spokeAngleRadians / 4.5;
     const rimThickness = 1.5; // Thickness of the outer rim
 
-    const innerRadius = centralCircleRadius; // radius of the central solid circle
+    const innerRadius = centralCircleRadius; // Radius of the central solid circle
     const outerRadius = radius - rimThickness; // Up to the base of the teeth minus rim thickness
 
     for (let i = 0; i < numSpokes; i++) {
@@ -106,7 +107,7 @@ function EscapementWheel({
       const thetaStart = i * anglePerSpoke + halfSpokeAngle;
       const thetaEnd = (i + 1) * anglePerSpoke - halfSpokeAngle;
 
-      const holeSegments = 16; // number of segments to approximate the hole shape
+      const holeSegments = 16; // Number of segments to approximate the hole shape
 
       // Move to the starting point on the inner radius
       hole.moveTo(
@@ -143,10 +144,41 @@ function EscapementWheel({
     return new ExtrudeGeometry(shape, extrudeSettings);
   }, [numTeeth, radius, toothHeight, thickness]);
 
-  // Rotate the escapement wheel
+  // New code for ticking rotation
+  const elapsedTime = useRef(0);
+  const currentRotation = useRef(0);
+  const targetRotation = useRef(0);
+  const anglePerTooth = (2 * Math.PI) / numTeeth;
+
+  useEffect(() => {
+    if (mesh.current) {
+      currentRotation.current = mesh.current.rotation.z;
+      targetRotation.current = mesh.current.rotation.z;
+    }
+  }, []);
+
   useFrame((_, delta) => {
-    if (rotationSpeed && mesh.current) {
-      mesh.current.rotation.z += rotationSpeed * delta;
+    if (mesh.current) {
+      elapsedTime.current += delta;
+
+      if (elapsedTime.current >= period) {
+        // Start a new tick
+        elapsedTime.current = 0;
+        // Update the current rotation to target rotation
+        currentRotation.current = targetRotation.current;
+        // Set new target rotation
+        targetRotation.current += anglePerTooth;
+      }
+
+      if (elapsedTime.current <= tickDuration) {
+        // Interpolate rotation from currentRotation to targetRotation over tickDuration
+        const t = elapsedTime.current / tickDuration;
+        const newRotation = currentRotation.current + t * anglePerTooth;
+        mesh.current.rotation.z = newRotation;
+      } else {
+        // Hold at target rotation
+        mesh.current.rotation.z = targetRotation.current;
+      }
     }
   });
 
