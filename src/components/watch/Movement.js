@@ -6,46 +6,82 @@ import Gear from '@/components/watch/Gear';
 import EscapementWheel from '@/components/watch/EscapementWheel';
 
 function Movement() {
-  const connectedGearRef = useRef();
+  // References to the gears
   const escapementWheelRef = useRef();
+  const connectedGearRef = useRef();
 
-  const period = 1;
-  const tickDuration = 0.1; // Not "Tick" in game clock sense, but the duration of the escapement wheel rotation
-
-  // Define teeth counts
+  // Gear parameters
   const escapementTeethCount = 30;
-  const pinionTeethCount = 15; // The pinion gear attached to escapement wheel
-  const connectedGearTeethCount = 30; // The gear connected to the pinion
+  const pinionTeethCount = 15; // Pinion attached to escapement wheel
+  const connectedGearTeethCount = 30; // Gear meshed with the pinion
 
-  // New code for ticking rotation
-  const elapsedTime = useRef(0);
-  const currentRotation = useRef(0);
-  const targetRotation = useRef(0);
+  // Escapement wheel rotation parameters
+  const period = 1; // Time between ticks
+  const tickDuration = 0.1; // Duration of the tick movement
   const anglePerTooth = (2 * Math.PI) / escapementTeethCount;
 
-  useFrame(function rotateEscapementWheel(_, delta) {
-    if (escapementWheelRef.current) {
-      elapsedTime.current += delta;
+  // State variables for the escapement wheel
+  const elapsedTime = useRef(0);
+  const escapementRotation = useRef(0);
 
-      if (elapsedTime.current >= period) {
-        // Start a new tick
-        elapsedTime.current = 0;
-        // Update the current rotation to target rotation
-        currentRotation.current = targetRotation.current;
-        // Set new target rotation
-        targetRotation.current += anglePerTooth;
-      }
+  // State variables for the connected gear
+  const connectedGearRotation = useRef(0);
 
-      if (elapsedTime.current <= tickDuration) {
-        // Interpolate rotation from currentRotation to targetRotation over tickDuration
-        const t = elapsedTime.current / tickDuration;
-        const newRotation = currentRotation.current + t * anglePerTooth;
-        escapementWheelRef.current.rotation.z = newRotation;
-      } else {
-        // Hold at target rotation
-        escapementWheelRef.current.rotation.z = targetRotation.current;
-      }
+  // Function to update gear rotation based on driving gear
+  const updateGearRotation = (
+    drivingGearDeltaRotation,
+    drivingGearTeethCount,
+    drivenGearRef,
+    drivenGearTeethCount,
+    drivenGearRotationRef
+  ) => {
+    const gearRatio = drivingGearTeethCount / drivenGearTeethCount;
+    const deltaRotation = -drivingGearDeltaRotation * gearRatio;
+    drivenGearRotationRef.current += deltaRotation;
+    if (drivenGearRef.current) {
+      drivenGearRef.current.rotation.z = drivenGearRotationRef.current;
     }
+  };
+
+  useFrame((_, delta) => {
+    elapsedTime.current += delta;
+
+    // Check if we're within the tick duration
+    const isTicking = elapsedTime.current % period <= tickDuration;
+
+    // Calculate the target rotation based on completed ticks
+    const completedTicks = Math.floor(elapsedTime.current / period);
+    const baseRotation = completedTicks * anglePerTooth;
+
+    // Calculate rotation during the current tick
+    let rotationThisFrame = 0;
+    if (isTicking) {
+      const tickProgress = (elapsedTime.current % period) / tickDuration;
+      rotationThisFrame = anglePerTooth * tickProgress;
+    } else {
+      rotationThisFrame = anglePerTooth;
+    }
+
+    // Total rotation for the escapement wheel
+    const newEscapementRotation = baseRotation + rotationThisFrame;
+
+    // Calculate rotation difference
+    const deltaEscapementRotation = newEscapementRotation - escapementRotation.current;
+    escapementRotation.current = newEscapementRotation;
+
+    // Update escapement wheel rotation
+    if (escapementWheelRef.current) {
+      escapementWheelRef.current.rotation.z = newEscapementRotation;
+    }
+
+    // Update connected gear rotation
+    updateGearRotation(
+      deltaEscapementRotation,
+      pinionTeethCount,
+      connectedGearRef,
+      connectedGearTeethCount,
+      connectedGearRotation
+    );
   });
 
   return (
@@ -59,10 +95,10 @@ function Movement() {
         thickness={2}
         color="gray"
       />
-      {/* Gear connected to escapement pinion */}
+      {/* Connected gear meshed with the pinion */}
       <Gear
         ref={connectedGearRef}
-        position={[15.7, 3.3, 0]}
+        position={[15.7, 3.4, 0]}
         numTeeth={connectedGearTeethCount}
         radius={10.5}
         numTeeth1={pinionTeethCount}
