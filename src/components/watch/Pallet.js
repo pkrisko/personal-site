@@ -83,7 +83,7 @@ const Pallet = forwardRef(
       const axleGeometry = createAxleGeometry(AXLE_RADIUS, AXLE_HEIGHT);
 
       return [leftArmGeometry, rightArmGeometry, arcGeometry, rubyGeometry, axleGeometry];
-    }, [armLength, armWidth, depth, angle, curveRadius, rubyWidth, rubyHeight, rubyDepth, AXLE_RADIUS, AXLE_HEIGHT]);
+    }, [armLength, armWidth, depth, angle, curveRadius, rubyWidth, rubyHeight, rubyDepth]);
 
     return (
       <group ref={ref} position={position} rotation={[0, 0, 0]}>

@@ -202,7 +202,6 @@ const Gear = forwardRef(
     module,
     numTeeth1,
     numTeeth2,
-    clearance,
     backlash,
     thickness,
     addendumFactor, // Added to dependencies

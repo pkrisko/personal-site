@@ -18,17 +18,6 @@ const PALLET_SWING_ANGLE = 5.9 * (Math.PI / 180); // ~10 degrees in radians
 const PALLET_PHASE_OFFSET = -Math.PI; // Phase offset to start the pallet at a different point
 const PALLET_CLOCKWISE_OFFSET = -5 * Math.PI / 180; // Slight clockwise offset (1 degree)
 
-// Custom hook to manage gear rotation
-const useGearRotation = (ref, drivingDeltaRotation, drivingTeeth, drivenTeeth, drivenRotation) => {
-  const gearRatio = drivingTeeth / drivenTeeth;
-  const deltaRotation = -drivingDeltaRotation * gearRatio;
-  drivenRotation.current += deltaRotation;
-
-  if (ref.current) {
-    ref.current.rotation.z = drivenRotation.current;
-  }
-};
-
 // Custom hook to handle escapement wheel rotation logic and pallet oscillation
 const useEscapementRotation = (escapementRef, connectedGearRef, connectedGearRotation, palletRef) => {
   const elapsedTime = useRef(0);
@@ -54,13 +43,13 @@ const useEscapementRotation = (escapementRef, connectedGearRef, connectedGearRot
     }
 
     // Update connected gear rotation
-    useGearRotation(
-      connectedGearRef,
-      deltaEscapementRotation,
-      PINION_TEETH_COUNT,
-      CONNECTED_GEAR_TEETH_COUNT,
-      connectedGearRotation
-    );
+    const gearRatio = PINION_TEETH_COUNT / CONNECTED_GEAR_TEETH_COUNT;
+    const deltaRotation = -deltaEscapementRotation * gearRatio;
+    connectedGearRotation.current += deltaRotation;
+
+    if (connectedGearRef.current) {
+      connectedGearRef.current.rotation.z = connectedGearRotation.current;
+    }
 
     // Calculate pallet oscillation with phase and clockwise offset
     const palletProgress = (elapsedTime.current % TICK_PERIOD) / TICK_PERIOD;
