@@ -13,7 +13,7 @@ const EscapementWheel = forwardRef(
       radius = 10,
       toothHeight = 3,
       thickness = 0.5,
-      color = 'gray',
+      color = '#B1B5B5',
     },
     ref
   ) => {
@@ -67,10 +67,10 @@ const EscapementWheel = forwardRef(
     shape.closePath();
 
     // Define the central solid circle radius
-    const centralCircleRadius = radius / 3; // Adjust as needed for central solid circle
+    const centralCircleRadius = radius / 3;
 
     // Create the axle hole in the center
-    const axleHoleRadius = 2; // Adjust as needed for small hole in center (axle)
+    const axleHoleRadius = 3;
     const axleHole = new Shape();
     const numSegments = 32;
 
@@ -162,7 +162,7 @@ const EscapementWheel = forwardRef(
           backlash={0.0}
           thickness={2}
           module={3}
-          color="silver"
+          color="#EAECEC"
           addendumFactor={1.5}
         />
       </mesh>

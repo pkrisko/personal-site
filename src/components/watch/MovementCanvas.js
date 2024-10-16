@@ -17,7 +17,7 @@ const MovementCanvas = () => {
   const controlsRef = useRef();
 
   const moveCamera = (direction) => {
-    const moveAmount = 0.89;
+    const moveAmount = 1.2;
     const controls = controlsRef.current;
     if (!controls) return;
     const { object: camera, target } = controls;
@@ -74,7 +74,7 @@ const MovementCanvas = () => {
         </DirectionalButton>
       </div>
 
-      <Canvas shadows camera={{ position: [0, 0, 100], fov: 60 }}>
+      <Canvas shadows camera={{ position: [0, -25, 200], fov: 60 }}>
         <CameraController moveCamera={moveCamera} controlsRef={controlsRef} />
 
         {/* Lighting */}
@@ -85,10 +85,10 @@ const MovementCanvas = () => {
         <Movement />
 
         {/* Orbit Controls */}
-        <OrbitControls ref={controlsRef} enableZoom={true} />
+        <OrbitControls ref={controlsRef} enableZoom={true} target={[0, -25, 0]} />
       </Canvas>
     </div>
   );
-}
+};
 
 export default MovementCanvas;
