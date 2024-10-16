@@ -13,7 +13,7 @@ const EscapementWheel = forwardRef(
       radius = 10,
       toothHeight = 3,
       thickness = 0.5,
-      color = '#E1C16E',
+      color = '#B1B5B5',
     },
     ref
   ) => {
@@ -162,7 +162,7 @@ const EscapementWheel = forwardRef(
           backlash={0.0}
           thickness={2}
           module={3}
-          color="silver"
+          color="#EAECEC"
           addendumFactor={1.5}
         />
       </mesh>
