@@ -10,9 +10,12 @@ import EscapementWheel from '@/components/watch/EscapementWheel';
 const ESCAPEMENT_TEETH_COUNT = 30;
 const PINION_TEETH_COUNT = 15;
 const CONNECTED_GEAR_TEETH_COUNT = 30;
-const TICK_PERIOD = 1; // Time between ticks
-const TICK_DURATION = 0.4; // Duration of the tick movement
+const TICK_PERIOD = 2; // Time between ticks
+const TICK_DURATION = 0.5; // Duration of the tick movement
 const ESCAPEMENT_ANGLE_PER_TOOTH = (2 * Math.PI) / ESCAPEMENT_TEETH_COUNT;
+const PALLET_SWING_ANGLE = (Math.PI / 40); // ~10 degrees in radians
+const PALLET_PHASE_OFFSET = -Math.PI; // Phase offset to start the pallet at a different point
+const PALLET_CLOCKWISE_OFFSET = -Math.PI / 180; // Slight clockwise offset (1 degree)
 
 // Custom hook to manage gear rotation
 const useGearRotation = (ref, drivingDeltaRotation, drivingTeeth, drivenTeeth, drivenRotation) => {
@@ -25,8 +28,8 @@ const useGearRotation = (ref, drivingDeltaRotation, drivingTeeth, drivenTeeth, d
   }
 };
 
-// Custom hook to handle escapement wheel rotation logic
-const useEscapementRotation = (escapementRef, connectedGearRef, connectedGearRotation) => {
+// Custom hook to handle escapement wheel rotation logic and pallet oscillation
+const useEscapementRotation = (escapementRef, connectedGearRef, connectedGearRotation, palletRef) => {
   const elapsedTime = useRef(0);
   const escapementRotation = useRef(0);
 
@@ -57,6 +60,14 @@ const useEscapementRotation = (escapementRef, connectedGearRef, connectedGearRot
       CONNECTED_GEAR_TEETH_COUNT,
       connectedGearRotation
     );
+
+    // Calculate pallet oscillation with phase and clockwise offset
+    const palletProgress = (elapsedTime.current % TICK_PERIOD) / TICK_PERIOD;
+    const palletAngle = PALLET_SWING_ANGLE * Math.sin(palletProgress * Math.PI * 2 + PALLET_PHASE_OFFSET);
+
+    if (palletRef.current) {
+      palletRef.current.rotation.z = palletAngle - Math.PI / 2 + PALLET_CLOCKWISE_OFFSET;
+    }
   });
 };
 
@@ -67,8 +78,8 @@ function Movement() {
   const palletRef = useRef();
   const connectedGearRotation = useRef(0);
 
-  // Hook to handle escapement and connected gear rotations
-  useEscapementRotation(escapementWheelRef, connectedGearRef, connectedGearRotation);
+  // Hook to handle escapement and connected gear rotations, including pallet oscillation
+  useEscapementRotation(escapementWheelRef, connectedGearRef, connectedGearRotation, palletRef);
 
   return (
     <>
@@ -96,8 +107,8 @@ function Movement() {
       />
       <Pallet
         ref={palletRef}
-        position={[0, 44, -1]}
-        rotation={[0, 0, Math.PI / 2]}
+        position={[0, 49.5, -1]}
+        rotation={[0, 0, 0]} // Base rotation, with further adjustment in the hook
         thickness={2}
       />
     </>

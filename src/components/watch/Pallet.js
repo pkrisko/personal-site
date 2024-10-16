@@ -48,9 +48,9 @@ const Pallet = forwardRef(
       color = '#E1C16E', // Brass
       rubyColor = '#E0115F', // Ruby red
       depth = 1.0, // Depth of the 3D extrusion
-      armLength = 31.0, // Length of each arm of the "V"
+      armLength = 40, // Length of each arm of the "V"
       armWidth = 3.0,  // Width (thickness) of the "V" arms
-      angle = (2 * Math.PI) / 3, // 120-degree angle in radians (for the "V" shape)
+      angle = (102 * Math.PI) / 180, // 120-degree angle in radians (for the "V" shape)
       curveRadius = 3.0, // Radius for the arc connecting the arms
       rubyWidth = 1.5, // Width of the ruby
       rubyHeight = 11.0, // Height of the ruby
@@ -68,7 +68,7 @@ const Pallet = forwardRef(
     }, [armLength, armWidth, depth, angle, curveRadius, rubyWidth, rubyHeight, rubyDepth]);
 
     return (
-      <group ref={ref} position={position} rotation={[0, 0, Math.PI / -2]}>
+      <group ref={ref} position={position} rotation={[0, 0, 0]}>
         {/* Left arm */}
         <mesh geometry={leftArmGeometry} castShadow receiveShadow>
           <meshStandardMaterial color={color} />
@@ -93,8 +93,8 @@ const Pallet = forwardRef(
         {/* Entry Ruby (left arm) */}
         <mesh
           geometry={rubyGeometry}
-          position={[15, -armLength + 7, -0.1]} // Adjusted position near the end of the left arm
-          rotation={[0, 0, -Math.PI / 3]}
+          position={[armLength - 12, -armLength + 11, -0.1]} // Adjusted position near the end of the left arm
+          rotation={[0, 0, -angle / 2]}
           castShadow
           receiveShadow
         >
@@ -104,8 +104,8 @@ const Pallet = forwardRef(
         {/* Exit Ruby (right arm) */}
         <mesh
           geometry={rubyGeometry}
-          position={[15, armLength - 7, -0.1]} // Adjusted position near the end of the left arm
-          rotation={[0, 0, Math.PI / 3]}
+          position={[armLength - 12, armLength - 11, -0.1]} // Adjusted position near the end of the left arm
+          rotation={[0, 0, angle / 2]}
           castShadow
           receiveShadow
         >
