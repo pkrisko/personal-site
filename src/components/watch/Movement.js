@@ -3,21 +3,23 @@
 import React, { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import Gear from '@/components/watch/Gear';
+import Pallet from '@/components/watch/Pallet';
 import EscapementWheel from '@/components/watch/EscapementWheel';
 
 function Movement() {
   // References to the gears
   const escapementWheelRef = useRef();
   const connectedGearRef = useRef();
+  const palletRef = useRef();
 
   // Gear parameters
   const escapementTeethCount = 30;
-  const pinionTeethCount = 15; // Pinion attached to escapement wheel
-  const connectedGearTeethCount = 30; // Gear meshed with the pinion
+  const pinionTeethCount = 15; // Pinion part of escapement wheel
+  const connectedGearTeethCount = 30; // Gear meshed with the escapement pinion
 
   // Escapement wheel rotation parameters
   const period = 1; // Time between ticks
-  const tickDuration = 0.1; // Duration of the tick movement
+  const tickDuration = 0.4; // Duration of the tick movement
   const anglePerTooth = (2 * Math.PI) / escapementTeethCount;
 
   // State variables for the escapement wheel
@@ -109,6 +111,12 @@ function Movement() {
         color="teal"
         module={3}
         addendumFactor={1.75}
+      />
+      <Pallet
+        ref={palletRef}
+        position={[0, 30, 5]}
+        rotation={[0, 0, Math.PI / 2]}
+        thickness={2}
       />
     </>
   );

@@ -67,10 +67,10 @@ const EscapementWheel = forwardRef(
     shape.closePath();
 
     // Define the central solid circle radius
-    const centralCircleRadius = radius / 3; // Adjust as needed for central solid circle
+    const centralCircleRadius = radius / 3;
 
     // Create the axle hole in the center
-    const axleHoleRadius = 2; // Adjust as needed for small hole in center (axle)
+    const axleHoleRadius = 3;
     const axleHole = new Shape();
     const numSegments = 32;
 
