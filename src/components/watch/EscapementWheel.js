@@ -13,7 +13,7 @@ const EscapementWheel = forwardRef(
       radius = 10,
       toothHeight = 3,
       thickness = 0.5,
-      color = 'gray',
+      color = '#E1C16E',
     },
     ref
   ) => {
