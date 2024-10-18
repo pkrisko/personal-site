@@ -2,8 +2,6 @@
 
 import React, { forwardRef, useMemo } from 'react';
 import { Cylinder } from '@react-three/drei';
-import { useFrame } from '@react-three/fiber';
-import { MeshStandardMaterial } from 'three';
 
 const Pendulum = forwardRef(
   (
@@ -24,7 +22,6 @@ const Pendulum = forwardRef(
         <Cylinder args={[armRadius, armRadius, armLength, 32]} position={[0, -armLength / 2, 0]}>
           <meshStandardMaterial color={color} />
         </Cylinder>
-
         {/* Pendulum Bob */}
         <Cylinder
           args={[bobRadius, bobRadius, bobDepth, 32]}

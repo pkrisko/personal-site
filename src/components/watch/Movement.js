@@ -2,17 +2,17 @@
 
 import React, { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
-import Gear from '@/components/watch/Gear';
+import GearPair from '@/components/watch/GearPair';
 import Pallet from '@/components/watch/Pallet';
 import EscapementWheel from '@/components/watch/EscapementWheel';
 
 // Constants for gear parameters and rotation behavior
 const ESCAPEMENT_TEETH_COUNT = 30;
-const PINION_TEETH_COUNT = 15;
-const CONNECTED_GEAR_TEETH_COUNT = 30;
+const PINION_TEETH_COUNT = 8;
+const CONNECTED_GEAR_TEETH_COUNT = 64;
 const TICK_PERIOD = 2; // Time between ticks
 const ESCAPEMENT_ROTATION_RATE = TICK_PERIOD / 2;
-const TICK_DURATION = 0.5; // Duration of the tick movement
+const TICK_DURATION = 0.4; // Duration of the tick movement
 const ESCAPEMENT_ANGLE_PER_TOOTH = (Math.PI) / ESCAPEMENT_TEETH_COUNT;
 const PALLET_SWING_ANGLE = 5.9 * (Math.PI / 180); // ~10 degrees in radians
 const PALLET_PHASE_OFFSET = -Math.PI; // Phase offset to start the pallet at a different point
@@ -78,22 +78,16 @@ function Movement() {
         position={[0, 0, -2]}
         numTeeth={ESCAPEMENT_TEETH_COUNT}
         radius={27}
-        toothHeight={3.5}
+        toothHeight={4.5}
         thickness={2}
       />
-      <Gear
+      <GearPair
+        position={[64.9,10.8, 0]}
         ref={connectedGearRef}
-        position={[15.7, 3.4, 0]}
-        numTeeth={CONNECTED_GEAR_TEETH_COUNT}
-        radius={10.5}
-        numTeeth1={PINION_TEETH_COUNT}
-        numTeeth2={CONNECTED_GEAR_TEETH_COUNT}
-        clearance={0.0}
-        backlash={0.0}
-        thickness={2}
-        color="#EAECEC"
-        module={3}
-        addendumFactor={1.75}
+        spurRadius={57.6}
+        spurTeethCount={CONNECTED_GEAR_TEETH_COUNT}
+        pinionRadius={7.2}
+        pinionTeethCount={PINION_TEETH_COUNT}
       />
       <Pallet
         ref={palletRef}

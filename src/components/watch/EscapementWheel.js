@@ -89,7 +89,7 @@ const EscapementWheel = forwardRef(
     shape.holes.push(axleHole);
 
     // Create the holes between spokes
-    const numSpokes = 13;
+    const numSpokes = 10;
     const spokeAngleDegrees = 10; // Width of the spokes in degrees
     const spokeAngleRadians = MathUtils.degToRad(spokeAngleDegrees);
     const anglePerSpoke = (2 * Math.PI) / numSpokes;
@@ -156,14 +156,14 @@ const EscapementWheel = forwardRef(
         <meshStandardMaterial color={color} />
           <Gear
           position={[0, 0, 2]}
-          numTeeth={15}
-          radius={5.0}
+          numTeeth={8}
+          radius={7.2}
           clearance={0.0}
           backlash={0.0}
           thickness={2}
           module={3}
           color="#EAECEC"
-          addendumFactor={1.5}
+          addendumFactor={1}
         />
       </mesh>
     </>
