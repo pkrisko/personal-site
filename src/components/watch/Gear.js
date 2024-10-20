@@ -13,10 +13,9 @@ const Gear = forwardRef(
       module = 1, // Module (recalculated if radius is provided)
       numTeeth1 = null, // Hypocycloid generating circle teeth (pinion)
       numTeeth2 = null, // Epicycloid generating circle teeth (wheel)
-      clearance = 0.25,
       backlash = 0.0,
-      thickness = 0.5,
-      color = 'gray',
+      thickness = 2,
+      color = '#EAECEC',
       addendumFactor = 1.0, // New parameter for addendum factor
     },
     ref

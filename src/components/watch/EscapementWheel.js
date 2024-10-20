@@ -88,51 +88,6 @@ const EscapementWheel = forwardRef(
 
     shape.holes.push(axleHole);
 
-    // Create the holes between spokes
-    const numSpokes = 13;
-    const spokeAngleDegrees = 10; // Width of the spokes in degrees
-    const spokeAngleRadians = MathUtils.degToRad(spokeAngleDegrees);
-    const anglePerSpoke = (2 * Math.PI) / numSpokes;
-    const halfSpokeAngle = spokeAngleRadians / 4.5;
-    const rimThickness = 1.5; // Thickness of the outer rim
-
-    const innerRadius = centralCircleRadius; // Radius of the central solid circle
-    const outerRadius = radius - rimThickness; // Up to the base of the teeth minus rim thickness
-
-    for (let i = 0; i < numSpokes; i++) {
-      const hole = new Shape();
-
-      // Angles for the gaps between spokes
-      const thetaStart = i * anglePerSpoke + halfSpokeAngle;
-      const thetaEnd = (i + 1) * anglePerSpoke - halfSpokeAngle;
-
-      const holeSegments = 16; // Number of segments to approximate the hole shape
-
-      // Move to the starting point on the inner radius
-      hole.moveTo(
-        innerRadius * Math.cos(thetaStart),
-        innerRadius * Math.sin(thetaStart)
-      );
-
-      // Draw points along the outer radius from thetaStart to thetaEnd
-      for (let j = 0; j <= holeSegments; j++) {
-        const t = thetaStart + (j / holeSegments) * (thetaEnd - thetaStart);
-        const x = outerRadius * Math.cos(t);
-        const y = outerRadius * Math.sin(t);
-        hole.lineTo(x, y);
-      }
-
-      // Draw points along the inner radius from thetaEnd back to thetaStart
-      for (let j = holeSegments; j >= 0; j--) {
-        const t = thetaStart + (j / holeSegments) * (thetaEnd - thetaStart);
-        const x = innerRadius * Math.cos(t);
-        const y = innerRadius * Math.sin(t);
-        hole.lineTo(x, y);
-      }
-
-      shape.holes.push(hole);
-    }
-
     // Extrude settings
     const extrudeSettings = {
       steps: 1,
@@ -156,14 +111,14 @@ const EscapementWheel = forwardRef(
         <meshStandardMaterial color={color} />
           <Gear
           position={[0, 0, 2]}
-          numTeeth={15}
-          radius={5.0}
+          numTeeth={8}
+          radius={7.2}
           clearance={0.0}
           backlash={0.0}
           thickness={2}
           module={3}
           color="#EAECEC"
-          addendumFactor={1.5}
+          addendumFactor={1}
         />
       </mesh>
     </>
