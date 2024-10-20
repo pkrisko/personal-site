@@ -70,7 +70,7 @@ export default function Home() {
             src="https://framerusercontent.com/images/MhiBwbuhgwo1AmTiM5FjGiKdF0.jpg?scale-down-to=1024"
           >
             <p className="text-xl">
-              Created a &quot;drop&quot; mechanism, realeasing one product (heavily discounted Rolex) per hour, on
+              Created a &quot;drop&quot; mechanism, releasing one product (heavily discounted Rolex) per hour, on
               the hour, for 10 hours. Idea to launch in 12 days, and <em>built in only 4</em>. No bots were successful and there were no repeat
               customers. This initiative set 24h revenue records for the company.
               <br />

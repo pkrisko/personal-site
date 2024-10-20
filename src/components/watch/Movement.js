@@ -19,7 +19,7 @@ const PALLET_PHASE_OFFSET = -Math.PI; // Phase offset to start the pallet at a d
 const PALLET_CLOCKWISE_OFFSET = -5 * Math.PI / 180; // Slight clockwise offset (1 degree)
 
 // Custom hook to handle escapement wheel rotation logic and pallet oscillation
-const useEscapementRotation = (escapementRef, connectedGearRef, connectedGearRotation, palletRef) => {
+const useEscapementRotation = (escapementRef, centerWheelRef, connectedGearRotation, palletRef) => {
   const elapsedTime = useRef(0);
   const escapementRotation = useRef(0);
 
@@ -47,8 +47,8 @@ const useEscapementRotation = (escapementRef, connectedGearRef, connectedGearRot
     const deltaRotation = -deltaEscapementRotation * gearRatio;
     connectedGearRotation.current += deltaRotation;
 
-    if (connectedGearRef.current) {
-      connectedGearRef.current.rotation.z = connectedGearRotation.current;
+    if (centerWheelRef.current) {
+      centerWheelRef.current.rotation.z = connectedGearRotation.current;
     }
 
     // Calculate pallet oscillation with phase and clockwise offset
@@ -64,34 +64,53 @@ const useEscapementRotation = (escapementRef, connectedGearRef, connectedGearRot
 function Movement() {
   // References to the components
   const escapementWheelRef = useRef();
-  const connectedGearRef = useRef();
+  const centerWheelRef = useRef();
+  // const thirdWheelRef = useRef();
   const palletRef = useRef();
   const connectedGearRotation = useRef(0);
 
   // Hook to handle escapement and connected gear rotations, including pallet oscillation
-  useEscapementRotation(escapementWheelRef, connectedGearRef, connectedGearRotation, palletRef);
+  useEscapementRotation(escapementWheelRef, centerWheelRef, connectedGearRotation, palletRef);
 
   return (
     <>
+      {/* Escapement has 1 full rotation per minute */}
+      {/* 8 teeth on pinion */}
       <EscapementWheel
         ref={escapementWheelRef}
-        position={[0, 0, -2]}
+        position={[0, 0, 0]}
         numTeeth={ESCAPEMENT_TEETH_COUNT}
-        radius={27}
-        toothHeight={4.5}
+        radius={45}
+        toothHeight={5.5}
         thickness={2}
       />
+      {/* Center Wheel and Pinion */}
+      {/* Gear Ratio 64 : 8 = 8 */}
       <GearPair
-        position={[64.9,10.8, 0]}
-        ref={connectedGearRef}
+        position={[65.2, 8.7, 2.0]}
+        ref={centerWheelRef}
         spurRadius={57.6}
         spurTeethCount={CONNECTED_GEAR_TEETH_COUNT}
         pinionRadius={7.2}
         pinionTeethCount={PINION_TEETH_COUNT}
       />
+      {/* Third Wheel and Pinion */}
+      {/* Gear Ratio 60 : 8 = 7.5 */}
+
+      {/* <GearPair
+        position={[132.2, 10.7, 4]}
+        ref={thirdWheelRef}
+        spurRadius={57.6}
+        spurTeethCount={60}
+        pinionRadius={7.2}
+        pinionTeethCount={8}
+      /> */}
+
+      {/* Hour Wheel and Pinion */}
+      {/* Gear Ratio 96 : 8 = 12 */}
       <Pallet
         ref={palletRef}
-        position={[4.5, 51.5, -1]}
+        position={[7.0, 79.6, 0]}
         rotation={[0, 0, 0]} // Base rotation, with further adjustment in the hook
         thickness={2}
       />

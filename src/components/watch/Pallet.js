@@ -4,8 +4,8 @@ import React, { forwardRef, useMemo } from 'react';
 import { Shape, ExtrudeGeometry, Vector2, BoxGeometry, CylinderGeometry } from 'three';
 import Pendulum from '@/components/watch/Pendulum';
 
-const RUBY_X_OFFSET = 14;
-const RUBY_Y_OFFSET = 14;
+const RUBY_X_OFFSET = 20;
+const RUBY_Y_OFFSET = 20;
 
 // Axle dimensions
 const AXLE_RADIUS = 1;
@@ -65,7 +65,7 @@ const Pallet = forwardRef(
       rubyColor = '#E0115F', // Ruby red
       axleColor = '#808080', // Gray color for the axle
       depth = 1.0, // Depth of the 3D extrusion
-      armLength = 40.0, // Length of each arm of the "V"
+      armLength = 60.0, // Length of each arm of the "V"
       armWidth = 3.0,  // Width (thickness) of the "V" arms
       angle = (96 * Math.PI) / 180, // 120-degree angle in radians (for the "V" shape)
       curveRadius = 4.0, // Radius for the arc connecting the arms

@@ -17,7 +17,7 @@ const MovementCanvas = () => {
   const controlsRef = useRef();
 
   const moveCamera = (direction) => {
-    const moveAmount = 1.2;
+    const moveAmount = 1.5;
     const controls = controlsRef.current;
     if (!controls) return;
     const { object: camera, target } = controls;
@@ -74,12 +74,12 @@ const MovementCanvas = () => {
         </DirectionalButton>
       </div>
 
-      <Canvas shadows camera={{ position: [0, -25, 200], fov: 60 }}>
+      <Canvas shadows camera={{ position: [0, -25, 350], fov: 60 }}>
         <CameraController moveCamera={moveCamera} controlsRef={controlsRef} />
 
         {/* Lighting */}
         <ambientLight intensity={0.5} />
-        <directionalLight position={[10, 10, 10]} intensity={1} castShadow />
+        <directionalLight position={[200, 200, 200]} intensity={1} castShadow />
 
         {/* Watch Movement Meshes  */}
         <Movement />
