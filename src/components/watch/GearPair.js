@@ -60,7 +60,7 @@ const GearPair = forwardRef(
         />
 
         {/* Central Ring (CD-shaped disc) */}
-        <mesh geometry={ringGeometry} position={[0, 0, 0]}>
+        <mesh geometry={ringGeometry} position={[0, 0, 0]} castShadow receiveShadow>
           <meshStandardMaterial color="#D8DADA" />
         </mesh>
 

@@ -5,21 +5,32 @@ import { useFrame } from '@react-three/fiber';
 import GearPair from '@/components/watch/GearPair';
 import Pallet from '@/components/watch/Pallet';
 import EscapementWheel from '@/components/watch/EscapementWheel';
+import ThirdWheel from '@/components/watch/ThirdWheel';
 
 // Constants for gear parameters and rotation behavior
 const ESCAPEMENT_TEETH_COUNT = 30;
-const PINION_TEETH_COUNT = 8;
-const CONNECTED_GEAR_TEETH_COUNT = 64;
+const PINION_TEETH_COUNT = 8; // Escapement pinion teeth count
+const CONNECTED_GEAR_TEETH_COUNT = 64; // Center wheel teeth count
+const CENTER_WHEEL_PINION_TEETH_COUNT = 8; // Center wheel pinion teeth count
+const THIRD_WHEEL_TEETH_COUNT = 60; // Third wheel teeth count
+
 const TICK_PERIOD = 2; // Time between ticks
 const ESCAPEMENT_ROTATION_RATE = TICK_PERIOD / 2;
 const TICK_DURATION = 0.4; // Duration of the tick movement
-const ESCAPEMENT_ANGLE_PER_TOOTH = (Math.PI) / ESCAPEMENT_TEETH_COUNT;
-const PALLET_SWING_ANGLE = 5.9 * (Math.PI / 180); // ~10 degrees in radians
+const ESCAPEMENT_ANGLE_PER_TOOTH = -(Math.PI) / ESCAPEMENT_TEETH_COUNT; // Negative to reverse rotation
+const PALLET_SWING_ANGLE = 5.9 * (Math.PI / 180); // ~5.9 degrees in radians
 const PALLET_PHASE_OFFSET = -Math.PI; // Phase offset to start the pallet at a different point
-const PALLET_CLOCKWISE_OFFSET = -5 * Math.PI / 180; // Slight clockwise offset (1 degree)
+const PALLET_CLOCKWISE_OFFSET = 5 * Math.PI / 180; // Slight clockwise offset (1 degree)
 
 // Custom hook to handle escapement wheel rotation logic and pallet oscillation
-const useEscapementRotation = (escapementRef, centerWheelRef, connectedGearRotation, palletRef) => {
+const useEscapementRotation = (
+  escapementRef,
+  centerWheelRef,
+  connectedGearRotation,
+  palletRef,
+  thirdWheelRef,
+  thirdWheelRotation
+) => {
   const elapsedTime = useRef(0);
   const escapementRotation = useRef(0);
 
@@ -42,13 +53,22 @@ const useEscapementRotation = (escapementRef, centerWheelRef, connectedGearRotat
       escapementRef.current.rotation.z = newEscapementRotation;
     }
 
-    // Update connected gear rotation
-    const gearRatio = PINION_TEETH_COUNT / CONNECTED_GEAR_TEETH_COUNT;
-    const deltaRotation = -deltaEscapementRotation * gearRatio;
-    connectedGearRotation.current += deltaRotation;
+    // Update connected gear rotation (Center Wheel)
+    const gearRatioEscToCenter = PINION_TEETH_COUNT / CONNECTED_GEAR_TEETH_COUNT; // 8 / 64 = 1/8
+    const deltaRotationCenter = -deltaEscapementRotation * gearRatioEscToCenter;
+    connectedGearRotation.current += deltaRotationCenter;
 
     if (centerWheelRef.current) {
       centerWheelRef.current.rotation.z = connectedGearRotation.current;
+    }
+
+    // Update third wheel rotation
+    const gearRatioCenterToThird = CENTER_WHEEL_PINION_TEETH_COUNT / THIRD_WHEEL_TEETH_COUNT; // 8 / 60 = 2/15
+    const deltaRotationThird = -deltaRotationCenter * gearRatioCenterToThird;
+    thirdWheelRotation.current += deltaRotationThird;
+
+    if (thirdWheelRef.current) {
+      thirdWheelRef.current.rotation.z = thirdWheelRotation.current;
     }
 
     // Calculate pallet oscillation with phase and clockwise offset
@@ -65,17 +85,24 @@ function Movement() {
   // References to the components
   const escapementWheelRef = useRef();
   const centerWheelRef = useRef();
-  // const thirdWheelRef = useRef();
   const palletRef = useRef();
+  const thirdWheelRef = useRef();
   const connectedGearRotation = useRef(0);
+  const thirdWheelRotation = useRef(0);
 
   // Hook to handle escapement and connected gear rotations, including pallet oscillation
-  useEscapementRotation(escapementWheelRef, centerWheelRef, connectedGearRotation, palletRef);
+  useEscapementRotation(
+    escapementWheelRef,
+    centerWheelRef,
+    connectedGearRotation,
+    palletRef,
+    thirdWheelRef,
+    thirdWheelRotation
+  );
 
   return (
     <>
-      {/* Escapement has 1 full rotation per minute */}
-      {/* 8 teeth on pinion */}
+      {/* Escapement Wheel */}
       <EscapementWheel
         ref={escapementWheelRef}
         position={[0, 0, 0]}
@@ -85,32 +112,23 @@ function Movement() {
         thickness={2}
       />
       {/* Center Wheel and Pinion */}
-      {/* Gear Ratio 64 : 8 = 8 */}
       <GearPair
-        position={[65.2, 8.7, 2.0]}
         ref={centerWheelRef}
+        position={[65.2, 8.7, 2.0]}
         spurRadius={57.6}
         spurTeethCount={CONNECTED_GEAR_TEETH_COUNT}
         pinionRadius={7.2}
         pinionTeethCount={PINION_TEETH_COUNT}
       />
-      {/* Third Wheel and Pinion */}
-      {/* Gear Ratio 60 : 8 = 7.5 */}
-
-      {/* <GearPair
-        position={[132.2, 10.7, 4]}
+      {/* Third Wheel */}
+      <ThirdWheel
         ref={thirdWheelRef}
-        spurRadius={57.6}
-        spurTeethCount={60}
-        pinionRadius={7.2}
-        pinionTeethCount={8}
-      /> */}
-
-      {/* Hour Wheel and Pinion */}
-      {/* Gear Ratio 96 : 8 = 12 */}
+        // Add other necessary props for your ThirdWheel component
+      />
+      {/* Pallet Fork */}
       <Pallet
         ref={palletRef}
-        position={[7.0, 79.6, 0]}
+        position={[-7.0, 79.6, 0]}
         rotation={[0, 0, 0]} // Base rotation, with further adjustment in the hook
         thickness={2}
       />
