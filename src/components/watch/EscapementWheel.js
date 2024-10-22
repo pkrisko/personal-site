@@ -26,8 +26,8 @@ const EscapementWheel = forwardRef(
 
       const anglePerTooth = (2 * Math.PI) / numTeeth;
 
-      const liftAngleDegrees = 7.5; // Angle of the tooth rise
-      const gapAngleDegrees = 6; // Gap between teeth, tooth width
+      const liftAngleDegrees = 3; // Angle of the tooth rise
+      const gapAngleDegrees = -5; // Gap between teeth, tooth width
 
       const liftAngleOffset = MathUtils.degToRad(liftAngleDegrees);
       const gapAngleOffset = MathUtils.degToRad(gapAngleDegrees);
@@ -45,11 +45,12 @@ const EscapementWheel = forwardRef(
         const baseX = radius * Math.cos(baseTheta);
         const baseY = radius * Math.sin(baseTheta);
 
-        const tipTheta = baseTheta + liftAngleOffset;
+        // Adjusted tipTheta and gapTheta to reverse tooth direction
+        const tipTheta = baseTheta - liftAngleOffset;
         const tipX = (radius + toothHeight) * Math.cos(tipTheta);
         const tipY = (radius + toothHeight) * Math.sin(tipTheta);
 
-        const gapTheta = nextBaseTheta - gapAngleOffset;
+        const gapTheta = nextBaseTheta + gapAngleOffset;
         const gapX = radius * Math.cos(gapTheta);
         const gapY = radius * Math.sin(gapTheta);
 
@@ -126,10 +127,14 @@ const EscapementWheel = forwardRef(
           <group
             position={[0, 0, AXLE_HEIGHT]}
             rotation={secondsHandRotation}
+            castShadow
+            receiveShadow
           >
             <Box
               args={[SECONDS_HAND_LENGTH, 3, 3]}
               position={[SECONDS_HAND_LENGTH / 2, 0, 0]}
+              castShadow
+              receiveShadow
             >
               <meshStandardMaterial color="red" />
             </Box>

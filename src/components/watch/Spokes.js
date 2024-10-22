@@ -45,6 +45,8 @@ const Spokes = ({
       args={[length, thickness, depth]}
       position={position}
       rotation={rotation}
+      castShadow
+      receiveShadow
     >
       <meshStandardMaterial color="#D8DADA" />
     </Box>
