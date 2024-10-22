@@ -5,6 +5,7 @@ import { useFrame } from '@react-three/fiber';
 import GearPair from '@/components/watch/GearPair';
 import Pallet from '@/components/watch/Pallet';
 import EscapementWheel from '@/components/watch/EscapementWheel';
+import ThirdWheel from '@/components/watch/ThirdWheel';
 
 // Constants for gear parameters and rotation behavior
 const ESCAPEMENT_TEETH_COUNT = 30;
@@ -91,6 +92,7 @@ function Movement() {
         pinionRadius={7.2}
         pinionTeethCount={PINION_TEETH_COUNT}
       />
+      <ThirdWheel position={[0, 0, 4]} />
       {/* Pallet Fork */}
       <Pallet
         ref={palletRef}

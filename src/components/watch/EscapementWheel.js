@@ -5,8 +5,8 @@ import { Shape, ExtrudeGeometry, MathUtils } from 'three';
 import { Box, Cylinder } from '@react-three/drei';
 import Gear from '@/components/watch/Gear';
 
-const AXLE_HEIGHT = 32;
-const SECONDS_HAND_LENGTH = 40;
+const AXLE_HEIGHT = 40;
+const SECONDS_HAND_LENGTH = 50;
 
 const EscapementWheel = forwardRef(
   (
@@ -125,10 +125,8 @@ const EscapementWheel = forwardRef(
           </Cylinder>
           {/* Seconds hand */}
           <group
-            position={[0, 0, AXLE_HEIGHT]}
+            position={[0, 0, AXLE_HEIGHT - 2]}
             rotation={secondsHandRotation}
-            castShadow
-            receiveShadow
           >
             <Box
               args={[SECONDS_HAND_LENGTH, 3, 3]}
