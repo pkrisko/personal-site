@@ -9,8 +9,11 @@ import ThirdWheel from '@/components/watch/ThirdWheel';
 
 // Constants for gear parameters and rotation behavior
 const ESCAPEMENT_TEETH_COUNT = 30;
-const PINION_TEETH_COUNT = 8;
-const CONNECTED_GEAR_TEETH_COUNT = 64;
+const PINION_TEETH_COUNT = 8; // Escapement pinion teeth count
+const CONNECTED_GEAR_TEETH_COUNT = 64; // Center wheel teeth count
+const CENTER_WHEEL_PINION_TEETH_COUNT = 8; // Center wheel pinion teeth count
+const THIRD_WHEEL_TEETH_COUNT = 60; // Third wheel teeth count
+
 const TICK_PERIOD = 2; // Time between ticks
 const ESCAPEMENT_ROTATION_RATE = TICK_PERIOD / 2;
 const TICK_DURATION = 0.4; // Duration of the tick movement
@@ -20,7 +23,14 @@ const PALLET_PHASE_OFFSET = -Math.PI; // Phase offset to start the pallet at a d
 const PALLET_CLOCKWISE_OFFSET = 5 * Math.PI / 180; // Slight clockwise offset (1 degree)
 
 // Custom hook to handle escapement wheel rotation logic and pallet oscillation
-const useEscapementRotation = (escapementRef, centerWheelRef, connectedGearRotation, palletRef) => {
+const useEscapementRotation = (
+  escapementRef,
+  centerWheelRef,
+  connectedGearRotation,
+  palletRef,
+  thirdWheelRef,
+  thirdWheelRotation
+) => {
   const elapsedTime = useRef(0);
   const escapementRotation = useRef(0);
 
@@ -43,13 +53,22 @@ const useEscapementRotation = (escapementRef, centerWheelRef, connectedGearRotat
       escapementRef.current.rotation.z = newEscapementRotation;
     }
 
-    // Update connected gear rotation
-    const gearRatio = PINION_TEETH_COUNT / CONNECTED_GEAR_TEETH_COUNT;
-    const deltaRotation = -deltaEscapementRotation * gearRatio;
-    connectedGearRotation.current += deltaRotation;
+    // Update connected gear rotation (Center Wheel)
+    const gearRatioEscToCenter = PINION_TEETH_COUNT / CONNECTED_GEAR_TEETH_COUNT; // 8 / 64 = 1/8
+    const deltaRotationCenter = -deltaEscapementRotation * gearRatioEscToCenter;
+    connectedGearRotation.current += deltaRotationCenter;
 
     if (centerWheelRef.current) {
       centerWheelRef.current.rotation.z = connectedGearRotation.current;
+    }
+
+    // Update third wheel rotation
+    const gearRatioCenterToThird = CENTER_WHEEL_PINION_TEETH_COUNT / THIRD_WHEEL_TEETH_COUNT; // 8 / 60 = 2/15
+    const deltaRotationThird = -deltaRotationCenter * gearRatioCenterToThird;
+    thirdWheelRotation.current += deltaRotationThird;
+
+    if (thirdWheelRef.current) {
+      thirdWheelRef.current.rotation.z = thirdWheelRotation.current;
     }
 
     // Calculate pallet oscillation with phase and clockwise offset
@@ -67,10 +86,19 @@ function Movement() {
   const escapementWheelRef = useRef();
   const centerWheelRef = useRef();
   const palletRef = useRef();
+  const thirdWheelRef = useRef();
   const connectedGearRotation = useRef(0);
+  const thirdWheelRotation = useRef(0);
 
   // Hook to handle escapement and connected gear rotations, including pallet oscillation
-  useEscapementRotation(escapementWheelRef, centerWheelRef, connectedGearRotation, palletRef);
+  useEscapementRotation(
+    escapementWheelRef,
+    centerWheelRef,
+    connectedGearRotation,
+    palletRef,
+    thirdWheelRef,
+    thirdWheelRotation
+  );
 
   return (
     <>
@@ -85,14 +113,18 @@ function Movement() {
       />
       {/* Center Wheel and Pinion */}
       <GearPair
-        position={[65.2, 8.7, 2.0]}
         ref={centerWheelRef}
+        position={[65.2, 8.7, 2.0]}
         spurRadius={57.6}
         spurTeethCount={CONNECTED_GEAR_TEETH_COUNT}
         pinionRadius={7.2}
         pinionTeethCount={PINION_TEETH_COUNT}
       />
-      <ThirdWheel position={[0, 0, 4]} />
+      {/* Third Wheel */}
+      <ThirdWheel
+        ref={thirdWheelRef}
+        // Add other necessary props for your ThirdWheel component
+      />
       {/* Pallet Fork */}
       <Pallet
         ref={palletRef}

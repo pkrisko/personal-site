@@ -1,6 +1,6 @@
 'use client';
 
-import React, { forwardRef, useMemo } from 'react';
+import React, { forwardRef } from 'react';
 import { Cylinder } from '@react-three/drei';
 
 const Pendulum = forwardRef(

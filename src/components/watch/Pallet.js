@@ -61,6 +61,7 @@ const Pallet = forwardRef(
   (
     {
       position = [0, 0, 0],
+      rotation = [0, 0, 0],
       color = '#E1C16E', // Brass
       rubyColor = '#E0115F', // Ruby red
       axleColor = '#808080', // Gray color for the axle
@@ -86,7 +87,7 @@ const Pallet = forwardRef(
     }, [armLength, armWidth, depth, angle, curveRadius, rubyWidth, rubyHeight, rubyDepth]);
 
     return (
-      <group ref={ref} position={position} rotation={[0, 0, 0]}>
+      <group ref={ref} position={position} rotation={rotation}>
         {/* Left arm */}
         <mesh geometry={leftArmGeometry} castShadow receiveShadow>
           <meshStandardMaterial color={color} />
