@@ -2,17 +2,27 @@
 
 import React, { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
-import GearPair from '@/components/watch/GearPair';
 import Pallet from '@/components/watch/Pallet';
 import EscapementWheel from '@/components/watch/EscapementWheel';
 import ThirdWheel from '@/components/watch/ThirdWheel';
+import CenterWheel from '@/components/watch/CenterWheel';
+import IntermediateWheel from '@/components/watch/IntermediateWheel';
+import HourWheel from '@/components/watch/HourWheel';
 
-// Constants for gear parameters and rotation behavior
+// Escapement Wheel
 const ESCAPEMENT_TEETH_COUNT = 30;
-const PINION_TEETH_COUNT = 8; // Escapement pinion teeth count
-const CONNECTED_GEAR_TEETH_COUNT = 64; // Center wheel teeth count
-const CENTER_WHEEL_PINION_TEETH_COUNT = 8; // Center wheel pinion teeth count
-const THIRD_WHEEL_TEETH_COUNT = 60; // Third wheel teeth count
+const ESCAPEMENT_WHEEL_PINION_TEETH_COUNT = 8;
+// Center Wheel
+const CENTER_WHEEL_SPUR_TEETH_COUNT = 64;
+const CENTER_WHEEL_PINION_TEETH_COUNT = 8;
+// Third Wheel
+const THIRD_WHEEL_SPUR_TEETH_COUNT = 60;
+const THIRD_WHEEL_PINION_TEETH_COUNT = 10;
+// Intermediate Wheel
+const INTERMEDIATE_WHEEL_SPUR_TEETH_COUNT = 40;
+const INTERMEDIATE_WHEEL_PINION_TEETH_COUNT = 10;
+// Hour Wheel
+const HOUR_WHEEL_SPUR_TEETH_COUNT = 30;
 
 const TICK_PERIOD = 2; // Time between ticks
 const ESCAPEMENT_ROTATION_RATE = TICK_PERIOD / 2;
@@ -54,7 +64,7 @@ const useEscapementRotation = (
     }
 
     // Update connected gear rotation (Center Wheel)
-    const gearRatioEscToCenter = PINION_TEETH_COUNT / CONNECTED_GEAR_TEETH_COUNT; // 8 / 64 = 1/8
+    const gearRatioEscToCenter = ESCAPEMENT_WHEEL_PINION_TEETH_COUNT / CENTER_WHEEL_SPUR_TEETH_COUNT; // 8 / 64 = 1/8
     const deltaRotationCenter = -deltaEscapementRotation * gearRatioEscToCenter;
     connectedGearRotation.current += deltaRotationCenter;
 
@@ -63,7 +73,7 @@ const useEscapementRotation = (
     }
 
     // Update third wheel rotation
-    const gearRatioCenterToThird = CENTER_WHEEL_PINION_TEETH_COUNT / THIRD_WHEEL_TEETH_COUNT; // 8 / 60 = 2/15
+    const gearRatioCenterToThird = CENTER_WHEEL_PINION_TEETH_COUNT / THIRD_WHEEL_SPUR_TEETH_COUNT; // 8 / 60 = 2/15
     const deltaRotationThird = -deltaRotationCenter * gearRatioCenterToThird;
     thirdWheelRotation.current += deltaRotationThird;
 
@@ -111,25 +121,27 @@ function Movement() {
         toothHeight={5.5}
         thickness={2}
       />
-      {/* Center Wheel and Pinion */}
-      <GearPair
+      <CenterWheel
         ref={centerWheelRef}
-        position={[65.2, 8.7, 2.0]}
-        spurRadius={57.6}
-        spurTeethCount={CONNECTED_GEAR_TEETH_COUNT}
-        pinionRadius={7.2}
-        pinionTeethCount={PINION_TEETH_COUNT}
+        spurTeethCount={CENTER_WHEEL_SPUR_TEETH_COUNT}
+        pinionTeethCount={CENTER_WHEEL_PINION_TEETH_COUNT}
       />
-      {/* Third Wheel */}
       <ThirdWheel
         ref={thirdWheelRef}
-        // Add other necessary props for your ThirdWheel component
+        spurTeethCount={THIRD_WHEEL_SPUR_TEETH_COUNT}
+        pinionTeethCount={THIRD_WHEEL_PINION_TEETH_COUNT}
       />
-      {/* Pallet Fork */}
+      <IntermediateWheel
+        spurTeethCount={INTERMEDIATE_WHEEL_SPUR_TEETH_COUNT}
+        pinionTeethCount={INTERMEDIATE_WHEEL_PINION_TEETH_COUNT}
+      />
+      <HourWheel
+        spurTeethCount={HOUR_WHEEL_SPUR_TEETH_COUNT}
+      />
       <Pallet
         ref={palletRef}
         position={[-7.0, 79.6, 0]}
-        rotation={[0, 0, 0]} // Base rotation, with further adjustment in the hook
+        rotation={[0, 0, 0]} // Rotation adjusted in useEscapementRotation
         thickness={2}
       />
     </>

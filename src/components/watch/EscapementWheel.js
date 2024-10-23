@@ -6,6 +6,7 @@ import { Box, Cylinder } from '@react-three/drei';
 import Gear from '@/components/watch/Gear';
 
 const AXLE_HEIGHT = 40;
+const AXLE_WIDTH = 2.5;
 const SECONDS_HAND_LENGTH = 50;
 
 const EscapementWheel = forwardRef(
@@ -115,7 +116,7 @@ const EscapementWheel = forwardRef(
           />
           {/* Axle which seconds hand spins on. */}
           <Cylinder
-            args={[2, 2, AXLE_HEIGHT, AXLE_HEIGHT]}
+            args={[AXLE_WIDTH, AXLE_WIDTH, AXLE_HEIGHT, AXLE_HEIGHT]}
             position={[0, 0, AXLE_HEIGHT / 2 + 0.1]}
             rotation={[Math.PI / 2, 0, 0]}
             castShadow
@@ -129,12 +130,12 @@ const EscapementWheel = forwardRef(
             rotation={secondsHandRotation}
           >
             <Box
-              args={[SECONDS_HAND_LENGTH, 3, 3]}
+              args={[SECONDS_HAND_LENGTH, 2, 2]}
               position={[SECONDS_HAND_LENGTH / 2, 0, 0]}
               castShadow
               receiveShadow
             >
-              <meshStandardMaterial color="red" />
+              <meshStandardMaterial color="#D7B081" />
             </Box>
           </group>
         </mesh>
