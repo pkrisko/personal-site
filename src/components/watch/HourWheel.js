@@ -14,16 +14,14 @@ const HourWheel = forwardRef(({
   position = [0, 0, 8],
   spurTeethCount = 30,
   axleHoleRadius = 7.2,
-  spurRadius = 26.3,
+  spurRadius = 27.2,
 }, ref) => {
   // Calculate the initial rotation of the seconds hand
   const hourHandRotation = useMemo(() => {
     const now = new Date();
     const minutes = now.getMinutes() + now.getSeconds() / 60;
     const hours = now.getHours() + minutes / 60;
-    console.log("hours", hours)
-    // Since the hand points east (15 minutes) at zero rotation,
-    // adjust the angle accordingly.
+    // Since the hand points east (15 minutes) at zero rotation, adjust the angle accordingly.
     const angle = MathUtils.degToRad(90 - (hours * 30));
     return [0, 0, angle];
   }, []);
@@ -97,7 +95,7 @@ const HourWheel = forwardRef(({
           castShadow
           receiveShadow
         >
-          <meshStandardMaterial color="#6B91F4" />
+          <meshStandardMaterial color="#0183fb" />
         </Box>
       </group>
     </group>

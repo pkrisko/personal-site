@@ -135,7 +135,7 @@ const EscapementWheel = forwardRef(
               castShadow
               receiveShadow
             >
-              <meshStandardMaterial color="#D7B081" />
+              <meshStandardMaterial color="#fc4f09" />
             </Box>
           </group>
         </mesh>

@@ -11,8 +11,8 @@ const MINUTE_HAND_LENGTH = 45;
 const ThirdWheel = forwardRef(({
   position = [0, 0, 4],
   spurTeethCount = 60,
-  spurRadius = 57.1,
-  pinionAddendumFactor = 1.2,
+  spurRadius = 56.7,
+  pinionAddendumFactor = 1.0,
   pinionTeethCount = 10,
   pinionRadius = 7.2,
 }, ref) => {
@@ -20,8 +20,7 @@ const ThirdWheel = forwardRef(({
   const minuteHandRotation = useMemo(() => {
     const now = new Date();
     const minutes = now.getMinutes() + now.getSeconds() / 60;
-    // Since the hand points east (15 minutes) at zero rotation,
-    // adjust the angle accordingly.
+    // Since the hand points east (15 minutes) at zero rotation, adjust the angle accordingly.
     const angle = MathUtils.degToRad(90 - minutes * 6);
     return [0, 0, angle];
   }, []);
@@ -29,6 +28,7 @@ const ThirdWheel = forwardRef(({
   return (
     <group ref={ref} position={position}>
       <GearPair
+        spurAddendumFactor={1.5}
         spurRadius={spurRadius}
         spurTeethCount={spurTeethCount}
         pinionAddendumFactor={pinionAddendumFactor}
@@ -53,7 +53,7 @@ const ThirdWheel = forwardRef(({
           castShadow
           receiveShadow
         >
-          <meshStandardMaterial color="#6B91F4" />
+          <meshStandardMaterial color="#0183fb" />
         </Box>
       </group>
     </group>

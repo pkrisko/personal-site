@@ -75,7 +75,7 @@ const MovementCanvas = () => {
         </DirectionalButton>
       </div>
 
-      <Canvas shadows camera={{ position: [0, -25, 200], fov: 60 }}>
+      <Canvas shadows camera={{ position: [0, 0, 200], fov: 60 }}>
         <CameraController moveCamera={moveCamera} controlsRef={controlsRef} />
 
         {/* Lighting */}

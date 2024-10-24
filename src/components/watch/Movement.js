@@ -36,10 +36,14 @@ const PALLET_CLOCKWISE_OFFSET = 5 * Math.PI / 180; // Slight clockwise offset (1
 const useEscapementRotation = (
   escapementRef,
   centerWheelRef,
-  connectedGearRotation,
-  palletRef,
+  centerWheelRotation,
   thirdWheelRef,
-  thirdWheelRotation
+  thirdWheelRotation,
+  intermediateWheelRef,
+  intermediateWheelRotation,
+  hourWheelRef,
+  hourWheelRotation,
+  palletRef,
 ) => {
   const elapsedTime = useRef(0);
   const escapementRotation = useRef(0);
@@ -66,10 +70,10 @@ const useEscapementRotation = (
     // Update connected gear rotation (Center Wheel)
     const gearRatioEscToCenter = ESCAPEMENT_WHEEL_PINION_TEETH_COUNT / CENTER_WHEEL_SPUR_TEETH_COUNT; // 8 / 64 = 1/8
     const deltaRotationCenter = -deltaEscapementRotation * gearRatioEscToCenter;
-    connectedGearRotation.current += deltaRotationCenter;
+    centerWheelRotation.current += deltaRotationCenter;
 
     if (centerWheelRef.current) {
-      centerWheelRef.current.rotation.z = connectedGearRotation.current;
+      centerWheelRef.current.rotation.z = centerWheelRotation.current;
     }
 
     // Update third wheel rotation
@@ -79,6 +83,24 @@ const useEscapementRotation = (
 
     if (thirdWheelRef.current) {
       thirdWheelRef.current.rotation.z = thirdWheelRotation.current;
+    }
+
+    // Intermediate wheel
+    const gearRatioThirdToIntermediate = THIRD_WHEEL_PINION_TEETH_COUNT / INTERMEDIATE_WHEEL_SPUR_TEETH_COUNT; // 10 / 40 = 1/4
+    const deltaRotationIntermediate = -deltaRotationThird * gearRatioThirdToIntermediate;
+    intermediateWheelRotation.current += deltaRotationIntermediate;
+
+    if (intermediateWheelRef.current) {
+      intermediateWheelRef.current.rotation.z = intermediateWheelRotation.current;
+    }
+
+    // Hour wheel
+    const gearRatioIntermediateToHour = INTERMEDIATE_WHEEL_PINION_TEETH_COUNT / HOUR_WHEEL_SPUR_TEETH_COUNT; // 10 / 30 = 1/3
+    const deltaRotationHour = -deltaRotationIntermediate * gearRatioIntermediateToHour;
+    hourWheelRotation.current += deltaRotationHour;
+
+    if (hourWheelRef.current) {
+      hourWheelRef.current.rotation.z = hourWheelRotation.current;
     }
 
     // Calculate pallet oscillation with phase and clockwise offset
@@ -95,24 +117,32 @@ function Movement() {
   // References to the components
   const escapementWheelRef = useRef();
   const centerWheelRef = useRef();
-  const palletRef = useRef();
   const thirdWheelRef = useRef();
-  const connectedGearRotation = useRef(0);
-  const thirdWheelRotation = useRef(0);
+  const intermediateWheelRef = useRef();
+  const hourWheelRef = useRef();
+  const palletRef = useRef();
 
-  // Hook to handle escapement and connected gear rotations, including pallet oscillation
+  const centerWheelRotation = useRef(0);
+  const thirdWheelRotation = useRef(0);
+  const intermediateWheelRotation = useRef(0);
+  const hourWheelRotation = useRef(0);
+
+  // Hook to handle gear rotations, including pallet oscillation
   useEscapementRotation(
     escapementWheelRef,
     centerWheelRef,
-    connectedGearRotation,
-    palletRef,
+    centerWheelRotation,
     thirdWheelRef,
-    thirdWheelRotation
+    thirdWheelRotation,
+    intermediateWheelRef,
+    intermediateWheelRotation,
+    hourWheelRef,
+    hourWheelRotation,
+    palletRef,
   );
 
   return (
     <>
-      {/* Escapement Wheel */}
       <EscapementWheel
         ref={escapementWheelRef}
         position={[0, 0, 0]}
@@ -132,10 +162,12 @@ function Movement() {
         pinionTeethCount={THIRD_WHEEL_PINION_TEETH_COUNT}
       />
       <IntermediateWheel
+        ref={intermediateWheelRef}
         spurTeethCount={INTERMEDIATE_WHEEL_SPUR_TEETH_COUNT}
         pinionTeethCount={INTERMEDIATE_WHEEL_PINION_TEETH_COUNT}
       />
       <HourWheel
+        ref={hourWheelRef}
         spurTeethCount={HOUR_WHEEL_SPUR_TEETH_COUNT}
       />
       <Pallet

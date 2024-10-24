@@ -15,6 +15,7 @@ const CenterWheel = forwardRef(({
       position={position}
       spurRadius={spurRadius}
       spurTeethCount={spurTeethCount}
+      pinionAddendumFactor={1.0}
       pinionRadius={pinionRadius}
       pinionTeethCount={pinionTeethCount}
     />
