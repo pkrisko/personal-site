@@ -10,14 +10,15 @@ const CenterWheel = forwardRef(({
 }, ref) => {
 
   return (
-    <group ref={ref} position={position}>
-      <GearPair
-        spurRadius={spurRadius}
-        spurTeethCount={spurTeethCount}
-        pinionRadius={pinionRadius}
-        pinionTeethCount={pinionTeethCount}
-      />
-    </group>
+    <GearPair
+      ref={ref}
+      position={position}
+      spurRadius={spurRadius}
+      spurTeethCount={spurTeethCount}
+      pinionAddendumFactor={1.0}
+      pinionRadius={pinionRadius}
+      pinionTeethCount={pinionTeethCount}
+    />
   );
 });
 

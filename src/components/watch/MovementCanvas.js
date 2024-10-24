@@ -8,8 +8,7 @@ import {
   ArrowUp,
 } from '@phosphor-icons/react';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, useHelper } from '@react-three/drei';
-import { DirectionalLightHelper } from 'three';
+import { OrbitControls } from '@react-three/drei';
 import DirectionalLight from '@/components/watch/DirectionalLight';
 import CameraController from '@/components/watch/CameraController';
 import DirectionalButton from '@/components/watch/DirectionalButton';
@@ -19,7 +18,7 @@ const MovementCanvas = () => {
   const controlsRef = useRef();
 
   const moveCamera = (direction) => {
-    const moveAmount = 1.2;
+    const moveAmount = 1.25;
     const controls = controlsRef.current;
     if (!controls) return;
     const { object: camera, target } = controls;
@@ -76,7 +75,7 @@ const MovementCanvas = () => {
         </DirectionalButton>
       </div>
 
-      <Canvas shadows camera={{ position: [0, -25, 200], fov: 60 }}>
+      <Canvas shadows camera={{ position: [0, 0, 200], fov: 60 }}>
         <CameraController moveCamera={moveCamera} controlsRef={controlsRef} />
 
         {/* Lighting */}

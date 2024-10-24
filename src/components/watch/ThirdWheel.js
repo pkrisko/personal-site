@@ -5,22 +5,22 @@ import { MathUtils } from 'three';
 import GearPair from '@/components/watch/GearPair';
 
 const AXLE_HEIGHT = 32;
-const AXLE_WIDTH = 2.2; // Slightly wider than second hand, in real world would be a tube.
+const AXLE_WIDTH = 3.0; // Slightly wider than second hand, in real world would be a tube.
 const MINUTE_HAND_LENGTH = 45;
 
 const ThirdWheel = forwardRef(({
   position = [0, 0, 4],
   spurTeethCount = 60,
-  spurRadius = 57.1,
-  pinionTeethCount = 8,
+  spurRadius = 56.7,
+  pinionAddendumFactor = 1.0,
+  pinionTeethCount = 10,
   pinionRadius = 7.2,
 }, ref) => {
   // Calculate the initial rotation of the seconds hand
   const minuteHandRotation = useMemo(() => {
     const now = new Date();
     const minutes = now.getMinutes() + now.getSeconds() / 60;
-    // Since the hand points east (15 minutes) at zero rotation,
-    // adjust the angle accordingly.
+    // Since the hand points east (15 minutes) at zero rotation, adjust the angle accordingly.
     const angle = MathUtils.degToRad(90 - minutes * 6);
     return [0, 0, angle];
   }, []);
@@ -28,14 +28,16 @@ const ThirdWheel = forwardRef(({
   return (
     <group ref={ref} position={position}>
       <GearPair
+        spurAddendumFactor={1.5}
         spurRadius={spurRadius}
         spurTeethCount={spurTeethCount}
+        pinionAddendumFactor={pinionAddendumFactor}
         pinionRadius={pinionRadius}
         pinionTeethCount={pinionTeethCount}
       />
       {/* Axle with hole in the middle */}
       <Cylinder
-        args={[AXLE_WIDTH, AXLE_WIDTH, AXLE_HEIGHT, 32, 1, true]} // 'true' for open-ended cylinder (hole)
+        args={[AXLE_WIDTH, AXLE_WIDTH, AXLE_HEIGHT, 32, 1]} // 'true' for open-ended cylinder (hole)
         position={[0, 0, AXLE_HEIGHT / 2]}
         rotation={[Math.PI / 2, 0, 0]}
         castShadow
@@ -51,7 +53,7 @@ const ThirdWheel = forwardRef(({
           castShadow
           receiveShadow
         >
-          <meshStandardMaterial color="blue" />
+          <meshStandardMaterial color="#0183fb" />
         </Box>
       </group>
     </group>

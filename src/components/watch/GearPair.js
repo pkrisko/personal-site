@@ -14,19 +14,13 @@ const GearPair = forwardRef(
       spurTeethCount = 60,
       pinionAddendumFactor = 1,
       pinionRadius = 7.2,
+      ringInnerRadius = pinionRadius - 3.5,
+      ringOuterRadius = pinionRadius + 1.5,
       pinionTeethCount = 8,
       numSpokes = 5,
     },
     ref
   ) => {
-    // Ring parameters
-    const ringInnerRadius = pinionRadius - 3.5; // Hole size
-    const ringOuterRadius = pinionRadius + 1.5; // Outer edge of the ring
-
-    // Adjusted radii for spokes
-    const innerRadius = ringOuterRadius; // Start of spokes
-    const outerRadius = spurRadius - 3; // End of spokes
-
     // Create the ring shape (CD-like disc)
     const ringShape = useMemo(() => {
       const shape = new Shape();
@@ -67,8 +61,8 @@ const GearPair = forwardRef(
         {/* Spokes */}
         <Spokes
           numSpokes={numSpokes}
-          innerRadius={innerRadius - 1}
-          outerRadius={outerRadius}
+          innerRadius={ringOuterRadius - 1}
+          outerRadius={spurRadius - 3}
         />
 
         {/* Pinion Gear */}
