@@ -4,7 +4,7 @@ import { MathUtils } from 'three';
 import { AXLE_HEIGHT } from '@/components/watch/EscapementWheel';
 import CompactDisc from '@/components/watch/CompactDisc';
 
-const SECONDS_HAND_LENGTH = 52;
+const SECONDS_HAND_LENGTH = 55;
 const OFFSET = 12;
 const LOLLIPOP_RADIUS = 1.8;
 
