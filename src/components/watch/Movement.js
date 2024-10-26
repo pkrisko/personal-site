@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import Pallet from '@/components/watch/Pallet';
 import EscapementWheel from '@/components/watch/EscapementWheel';
@@ -8,6 +8,7 @@ import ThirdWheel from '@/components/watch/ThirdWheel';
 import CenterWheel from '@/components/watch/CenterWheel';
 import IntermediateWheel from '@/components/watch/IntermediateWheel';
 import HourWheel from '@/components/watch/HourWheel';
+import Dial from '@/components/watch/Dial';
 
 // Escapement Wheel
 const ESCAPEMENT_TEETH_COUNT = 30;
@@ -26,7 +27,7 @@ const HOUR_WHEEL_SPUR_TEETH_COUNT = 30;
 
 const TICK_PERIOD = 2; // Time between ticks
 const ESCAPEMENT_ROTATION_RATE = TICK_PERIOD / 2;
-const TICK_DURATION = 0.4; // Duration of the tick movement
+const TICK_DURATION = 0.3; // Duration of the tick movement
 const ESCAPEMENT_ANGLE_PER_TOOTH = -(Math.PI) / ESCAPEMENT_TEETH_COUNT; // Negative to reverse rotation
 const PALLET_SWING_ANGLE = 5.9 * (Math.PI / 180); // ~5.9 degrees in radians
 const PALLET_PHASE_OFFSET = -Math.PI; // Phase offset to start the pallet at a different point
@@ -127,6 +128,8 @@ function Movement() {
   const intermediateWheelRotation = useRef(0);
   const hourWheelRotation = useRef(0);
 
+  const [showDial, setShowDial] = useState(true);
+
   // Hook to handle gear rotations, including pallet oscillation
   useEscapementRotation(
     escapementWheelRef,
@@ -170,11 +173,14 @@ function Movement() {
         ref={hourWheelRef}
         spurTeethCount={HOUR_WHEEL_SPUR_TEETH_COUNT}
       />
+      {showDial && <Dial />}
       <Pallet
         ref={palletRef}
         position={[-7.0, 79.6, 0]}
         rotation={[0, 0, 0]} // Rotation adjusted in useEscapementRotation
         thickness={2}
+        showDial={showDial}
+        setShowDial={setShowDial}
       />
     </>
   );

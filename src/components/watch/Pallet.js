@@ -73,6 +73,8 @@ const Pallet = forwardRef(
       rubyWidth = 1.5, // Width of the ruby
       rubyHeight = 11.0, // Height of the ruby
       rubyDepth = 1, // Depth of the ruby (thin)
+      showDial,
+      setShowDial = () => {},
     },
     ref
   ) => {
@@ -143,7 +145,7 @@ const Pallet = forwardRef(
         </mesh>
 
         {/* Pendulum */}
-        <Pendulum position={[0, 0, -AXLE_HEIGHT / 2]} />
+        <Pendulum position={[0, 0, -AXLE_HEIGHT / 2]} onClick={() => setShowDial(showDial === true ? false : true)} />
       </group>
     );
   }

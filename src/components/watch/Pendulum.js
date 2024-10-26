@@ -13,11 +13,12 @@ const Pendulum = forwardRef(
       bobRadius = 10, // Round bottom part of the pendulum is called a "Bob".
       bobDepth = 2, // Thickness of the bob
       color = '#EAECEC', // Default pendulum color
+      onClick,
     },
     ref
   ) => {
     return (
-      <group ref={ref} position={position} rotation={rotation}>
+      <group ref={ref} position={position} rotation={rotation} onClick={onClick}>
         {/* Pendulum Arm */}
         <Cylinder
           args={[armRadius, armRadius, armLength, 32]}
