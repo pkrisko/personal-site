@@ -46,3 +46,7 @@ a {
   margin-left: auto;
   margin-right: auto;
 }
+
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}

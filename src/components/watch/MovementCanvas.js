@@ -48,36 +48,39 @@ const MovementCanvas = () => {
 
   return (
     <div className="w-full h-screen relative">
-      <div className="absolute top-0 left-0 w-full flex justify-center items-center font-fantastique gap-2">
+      <div className="absolute inset-x-0 top-2 flex justify-center items-center font-fantastique gap-2">
         <MouseLeftClick size={32} />
         Click pendulum to toggle dial
       </div>
       {/* Directional Pad */}
-      <div className="absolute bottom-24 lg:bottom-10 z-10 left-1/2 transform -translate-x-1/2 grid grid-cols-3 gap-4">
-        <DirectionalButton
-          onClick={() => moveCamera('up')}
-          className="col-start-2 row-start-1"
-        >
-          <ArrowUp size={32} />
-        </DirectionalButton>
-        <DirectionalButton
-          onClick={() => moveCamera('left')}
-          className="col-start-1 row-start-2"
-        >
-          <ArrowLeft size={32} />
-        </DirectionalButton>
-        <DirectionalButton
-          onClick={() => moveCamera('down')}
-          className="col-start-2 row-start-2"
-        >
-          <ArrowDown size={32} />
-        </DirectionalButton>
-        <DirectionalButton
-          onClick={() => moveCamera('right')}
-          className="col-start-3 row-start-2"
-        >
-          <ArrowRight size={32} />
-        </DirectionalButton>
+      <div className="fixed inset-x-0 bottom-2 pb-4 z-10 safe-bottom">
+        <div className="max-w-[400px] grid grid-cols-3 gap-4 mx-auto">
+          <DirectionalButton
+            onClick={() => moveCamera('up')}
+            className="col-start-2 row-start-1"
+          >
+            <ArrowUp size={32} />
+          </DirectionalButton>
+          <DirectionalButton
+            onClick={() => moveCamera('left')}
+            className="col-start-1 row-start-2"
+          >
+            <ArrowLeft size={32} />
+          </DirectionalButton>
+          <DirectionalButton
+            onClick={() => moveCamera('down')}
+            className="col-start-2 row-start-2"
+          >
+            <ArrowDown size={32} />
+          </DirectionalButton>
+          <DirectionalButton
+            onClick={() => moveCamera('right')}
+            className="col-start-3 row-start-2"
+          >
+            <ArrowRight size={32} />
+          </DirectionalButton>
+
+        </div>
       </div>
 
       <Canvas shadows camera={{ position: [0, 0, 225], fov: 60 }}>

@@ -1,5 +1,6 @@
 import React from 'react';
-import { Cylinder, Box } from '@react-three/drei';
+import { MeshStandardMaterial } from 'three';
+import { Cylinder, Box, useTexture } from '@react-three/drei';
 import Index from '@/components/watch/Index';
 
 const Dial = ({
@@ -8,8 +9,15 @@ const Dial = ({
   depth = 2,
   dialHeight = 13,
 }) => {
-  // Hour indices (0 to 11)
   const indices = [...Array(12).keys()]; // array [0, 1, ..., 11]
+  const dialTexture = useTexture('/images/Paper001.png');
+  const sideMaterial = new MeshStandardMaterial({ color });
+  const topMaterial = new MeshStandardMaterial({
+    map: dialTexture,
+    roughness: 1,
+    metalness: 0,
+  });
+  const bottomMaterial = new MeshStandardMaterial({ color });
 
   // Minute markers (from 0 to 59), excluding multiples of 5
   const minuteIndices = [...Array(60).keys()].filter(
@@ -55,7 +63,7 @@ const Dial = ({
     return (
       <Box
         key={`minute-${i}`}
-        args={[0.2, 2, 0.2]} // width, height, depth
+        args={[0.2, 2, 0.2]}
         position={[x, y, z]}
         rotation={rotation}
         castShadow
@@ -69,16 +77,16 @@ const Dial = ({
   // Create sub-markers
   const subMarkers = subMarkerIndices.map((i) => {
     const angle = (i / 60) * 2 * Math.PI;
-    const radius = outerRadius - 3; // Same radius as minute markers
+    const radius = outerRadius - 3;
     const x = radius * Math.sin(angle);
     const y = radius * Math.cos(angle);
-    const z = dialHeight + 1; // Slightly lower than minute markers
+    const z = dialHeight + 1;
     const rotation = [0, 0, -angle]; // Rotate the marker to face outward
 
     return (
       <Box
         key={`submarker-${i}`}
-        args={[0.1, 1, 0.2]} // width, height, depth
+        args={[0.1, 1, 0.2]}
         position={[x, y, z]}
         rotation={rotation}
         castShadow
@@ -98,7 +106,9 @@ const Dial = ({
         castShadow
         receiveShadow
       >
-        <meshStandardMaterial color={color} />
+        <meshStandardMaterial attach="material-0" {...sideMaterial} />
+        <meshStandardMaterial attach="material-1" {...topMaterial} />
+        <meshStandardMaterial attach="material-2" {...bottomMaterial} />
       </Cylinder>
       {indexMarkers}
       {minuteMarkers}
