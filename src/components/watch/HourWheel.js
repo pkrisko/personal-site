@@ -5,10 +5,11 @@ import { MathUtils } from 'three';
 import Gear from '@/components/watch/Gear';
 import { Shape, ExtrudeGeometry } from 'three';
 import Spokes from '@/components/watch/Spokes';
+import Hand from '@/components/watch/Hand';
 
-const AXLE_HEIGHT = 24;
+const AXLE_HEIGHT = 15;
 const AXLE_WIDTH = 3.5; // Slightly wider than second hand, in real world would be a tube.
-const HOUR_HAND_LENGTH = 22;
+const HOUR_HAND_LENGTH = 34;
 
 const HourWheel = forwardRef(({
   position = [0, 0, 8],
@@ -21,8 +22,7 @@ const HourWheel = forwardRef(({
     const now = new Date();
     const minutes = now.getMinutes() + now.getSeconds() / 60;
     const hours = now.getHours() + minutes / 60;
-    // Since the hand points east (15 minutes) at zero rotation, adjust the angle accordingly.
-    const angle = MathUtils.degToRad(90 - (hours * 30));
+    const angle = MathUtils.degToRad(0 - (hours * 30)); // 30 = (360º / 12 hours)
     return [0, 0, angle];
   }, []);
 
@@ -88,16 +88,13 @@ const HourWheel = forwardRef(({
         <meshStandardMaterial color="gray" side={2} /> {/* side={2} to render both sides */}
       </Cylinder>
       {/* Minute hand */}
-      <group position={[0, 0, AXLE_HEIGHT - 2]} rotation={hourHandRotation}>
-        <Box
-          args={[HOUR_HAND_LENGTH, 4, 4]}
-          position={[HOUR_HAND_LENGTH / 2, 0, 0]}
-          castShadow
-          receiveShadow
-        >
-          <meshStandardMaterial color="#0183fb" />
-        </Box>
-      </group>
+      <Hand
+        position={[0, 0, AXLE_HEIGHT - 2]}
+        rotation={hourHandRotation}
+        length={HOUR_HAND_LENGTH}
+        donutRadius={3.8}
+        rearOffset={7.5}
+      />
     </group>
   );
 });

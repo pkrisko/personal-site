@@ -6,6 +6,7 @@ import {
   ArrowLeft,
   ArrowRight,
   ArrowUp,
+  MouseLeftClick,
 } from '@phosphor-icons/react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
@@ -47,6 +48,10 @@ const MovementCanvas = () => {
 
   return (
     <div className="w-full h-screen relative">
+      <div className="absolute top-0 left-0 w-full flex justify-center items-center font-fantastique gap-2">
+        <MouseLeftClick size={32} />
+        Click pendulum to toggle dial
+      </div>
       {/* Directional Pad */}
       <div className="absolute bottom-24 lg:bottom-10 z-10 left-1/2 transform -translate-x-1/2 grid grid-cols-3 gap-4">
         <DirectionalButton
@@ -75,7 +80,7 @@ const MovementCanvas = () => {
         </DirectionalButton>
       </div>
 
-      <Canvas shadows camera={{ position: [0, 0, 200], fov: 60 }}>
+      <Canvas shadows camera={{ position: [0, 0, 225], fov: 60 }}>
         <CameraController moveCamera={moveCamera} controlsRef={controlsRef} />
 
         {/* Lighting */}

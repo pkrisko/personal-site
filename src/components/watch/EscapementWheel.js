@@ -2,12 +2,12 @@
 
 import React, { forwardRef, useMemo } from 'react';
 import { Shape, ExtrudeGeometry, MathUtils } from 'three';
-import { Box, Cylinder } from '@react-three/drei';
+import { Cylinder } from '@react-three/drei';
 import Gear from '@/components/watch/Gear';
+import SecondHand from '@/components/watch/SecondHand';
 
-const AXLE_HEIGHT = 40;
+export const AXLE_HEIGHT = 28;
 const AXLE_WIDTH = 2.5;
-const SECONDS_HAND_LENGTH = 50;
 
 const EscapementWheel = forwardRef(
   (
@@ -46,7 +46,6 @@ const EscapementWheel = forwardRef(
         const baseX = radius * Math.cos(baseTheta);
         const baseY = radius * Math.sin(baseTheta);
 
-        // Adjusted tipTheta and gapTheta to reverse tooth direction
         const tipTheta = baseTheta - liftAngleOffset;
         const tipX = (radius + toothHeight) * Math.cos(tipTheta);
         const tipY = (radius + toothHeight) * Math.sin(tipTheta);
@@ -72,7 +71,6 @@ const EscapementWheel = forwardRef(
 
       shape.closePath();
 
-      // Extrude settings
       const extrudeSettings = {
         steps: 1,
         depth: thickness,
@@ -81,16 +79,6 @@ const EscapementWheel = forwardRef(
 
       return new ExtrudeGeometry(shape, extrudeSettings);
     }, [numTeeth, radius, toothHeight, thickness]);
-
-    // Calculate the initial rotation of the seconds hand
-    const secondsHandRotation = useMemo(() => {
-      const now = new Date();
-      const seconds = now.getSeconds() + now.getMilliseconds() / 1000;
-      // Since the hand points east (15 seconds) at zero rotation,
-      // adjust the angle accordingly.
-      const angle = MathUtils.degToRad(90 - seconds * 6);
-      return [0, 0, angle];
-    }, []);
 
     return (
       <>
@@ -124,20 +112,7 @@ const EscapementWheel = forwardRef(
           >
             <meshStandardMaterial color="#EAECEC" />
           </Cylinder>
-          {/* Seconds hand */}
-          <group
-            position={[0, 0, AXLE_HEIGHT - 2]}
-            rotation={secondsHandRotation}
-          >
-            <Box
-              args={[SECONDS_HAND_LENGTH, 2, 2]}
-              position={[SECONDS_HAND_LENGTH / 2, 0, 0]}
-              castShadow
-              receiveShadow
-            >
-              <meshStandardMaterial color="#fc4f09" />
-            </Box>
-          </group>
+          <SecondHand />
         </mesh>
       </>
     );

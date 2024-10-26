@@ -3,10 +3,11 @@ import React, { forwardRef, useMemo } from 'react';
 import { Box, Cylinder } from '@react-three/drei';
 import { MathUtils } from 'three';
 import GearPair from '@/components/watch/GearPair';
+import Hand from '@/components/watch/Hand';
 
-const AXLE_HEIGHT = 32;
+const AXLE_HEIGHT = 22;
 const AXLE_WIDTH = 3.0; // Slightly wider than second hand, in real world would be a tube.
-const MINUTE_HAND_LENGTH = 45;
+const MINUTE_HAND_LENGTH = 50;
 
 const ThirdWheel = forwardRef(({
   position = [0, 0, 4],
@@ -20,8 +21,7 @@ const ThirdWheel = forwardRef(({
   const minuteHandRotation = useMemo(() => {
     const now = new Date();
     const minutes = now.getMinutes() + now.getSeconds() / 60;
-    // Since the hand points east (15 minutes) at zero rotation, adjust the angle accordingly.
-    const angle = MathUtils.degToRad(90 - minutes * 6);
+    const angle = MathUtils.degToRad(0 - minutes * 6); // 6 = (360º / 60 minutes)
     return [0, 0, angle];
   }, []);
 
@@ -46,16 +46,14 @@ const ThirdWheel = forwardRef(({
         <meshStandardMaterial color="silver" side={2} /> {/* side={2} to render both sides */}
       </Cylinder>
       {/* Minute hand */}
-      <group position={[0, 0, AXLE_HEIGHT - 2]} rotation={minuteHandRotation}>
-        <Box
-          args={[MINUTE_HAND_LENGTH, 3, 3]}
-          position={[MINUTE_HAND_LENGTH / 2, 0, 0]}
-          castShadow
-          receiveShadow
-        >
-          <meshStandardMaterial color="#0183fb" />
-        </Box>
-      </group>
+      <Hand
+        position={[0, 0, AXLE_HEIGHT - 2]}
+        rotation={minuteHandRotation}
+        length={MINUTE_HAND_LENGTH}
+        donutRadius={3.3}
+        depth={1.5}
+        rearOffset={7.5}
+      />
     </group>
   );
 });
