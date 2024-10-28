@@ -7,7 +7,7 @@ const Pendulum = forwardRef(
   (
     {
       position = [0, 0, 0],
-      rotation = [0, 0, 85 * Math.PI / 180],
+      rotation = [0, 0, 90 * Math.PI / 180],
       armLength = 170,
       armRadius = 1,
       bobRadius = 10, // Round bottom part of the pendulum is called a "Bob".

@@ -6,7 +6,7 @@ import CompactDisc from '@/components/watch/CompactDisc';
 
 const SECONDS_HAND_LENGTH = 55;
 const OFFSET = 12;
-const LOLLIPOP_RADIUS = 1.8;
+const LOLLIPOP_RADIUS = 1.2;
 
 const SecondHand = ({
   width = 1.25,
@@ -35,7 +35,7 @@ const SecondHand = ({
         <meshStandardMaterial color={color} />
       </Box>
       <Cylinder
-        args={[2.8, 2.8, depth, 32]}
+        args={[1.5, 1.5, depth, 32]}
         position={[0, 0, 0]}
         rotation={[Math.PI / 2, 0, 0]}
         castShadow
@@ -43,6 +43,7 @@ const SecondHand = ({
       >
         <meshStandardMaterial color={color} />  
       </Cylinder>
+      {/* Lollipop */}
       <Cylinder
         args={[LOLLIPOP_RADIUS, LOLLIPOP_RADIUS, 1, 32]}
         position={[SECONDS_HAND_LENGTH - OFFSET - 8, 0, 0.5]}
@@ -52,6 +53,7 @@ const SecondHand = ({
       >
         <meshStandardMaterial color="white" />
       </Cylinder>
+      {/* Wall around lollipop */}
       <CompactDisc
         position={[SECONDS_HAND_LENGTH - OFFSET - 8,0,-1]}
         innerRadius={LOLLIPOP_RADIUS}

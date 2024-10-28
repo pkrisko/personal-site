@@ -9,13 +9,15 @@ const GearPair = forwardRef(
   (
     {
       position = [0, 0, 0],
+      rotation = [0, 0, 0],
       spurAddendumFactor = 1.75,
+      spurModule = 3.0,
       spurRadius = 57.6,
       spurTeethCount = 60,
       pinionAddendumFactor = 1,
-      pinionRadius = 7.2,
-      ringInnerRadius = pinionRadius - 3.5,
-      ringOuterRadius = pinionRadius + 1.5,
+      pinionRadius = 3.0,
+      ringInnerRadius = pinionRadius - 0.75,
+      ringOuterRadius = pinionRadius + 0.75,
       pinionTeethCount = 8,
       numSpokes = 5,
     },
@@ -45,12 +47,13 @@ const GearPair = forwardRef(
     }, [ringShape]);
 
     return (
-      <group position={position} ref={ref}>
+      <group position={position} rotation={rotation} ref={ref}>
         {/* Spur Gear */}
         <Gear
+          addendumFactor={spurAddendumFactor}
+          module={spurModule}
           numTeeth={spurTeethCount}
           radius={spurRadius}
-          addendumFactor={spurAddendumFactor}
         />
 
         {/* Central Ring (CD-shaped disc) */}
@@ -60,9 +63,10 @@ const GearPair = forwardRef(
 
         {/* Spokes */}
         <Spokes
+          thickness={2.5}
           numSpokes={numSpokes}
           innerRadius={ringOuterRadius - 1}
-          outerRadius={spurRadius - 3}
+          outerRadius={spurRadius - 1}
         />
 
         {/* Pinion Gear */}

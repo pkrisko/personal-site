@@ -29,13 +29,13 @@ const TICK_PERIOD = 2; // Time between ticks
 const ESCAPEMENT_ROTATION_RATE = TICK_PERIOD / 2;
 const TICK_DURATION = 0.3; // Duration of the tick movement
 const ESCAPEMENT_ANGLE_PER_TOOTH = -(Math.PI) / ESCAPEMENT_TEETH_COUNT; // Negative to reverse rotation
-const PALLET_SWING_ANGLE = 5.9 * (Math.PI / 180); // ~5.9 degrees in radians
+const PALLET_SWING_ANGLE = -6 * (Math.PI / 180);
 const PALLET_PHASE_OFFSET = -Math.PI; // Phase offset to start the pallet at a different point
-const PALLET_CLOCKWISE_OFFSET = 5 * Math.PI / 180; // Slight clockwise offset (1 degree)
 
 // Custom hook to handle escapement wheel rotation logic and pallet oscillation
 const useEscapementRotation = (
   escapementRef,
+  escapementRotation,
   centerWheelRef,
   centerWheelRotation,
   thirdWheelRef,
@@ -47,7 +47,6 @@ const useEscapementRotation = (
   palletRef,
 ) => {
   const elapsedTime = useRef(0);
-  const escapementRotation = useRef(0);
 
   useFrame((_, delta) => {
     elapsedTime.current += delta;
@@ -109,7 +108,7 @@ const useEscapementRotation = (
     const palletAngle = PALLET_SWING_ANGLE * Math.sin(palletProgress * Math.PI * 2 + PALLET_PHASE_OFFSET);
 
     if (palletRef.current) {
-      palletRef.current.rotation.z = palletAngle - Math.PI / 2 + PALLET_CLOCKWISE_OFFSET;
+      palletRef.current.rotation.z = palletAngle - Math.PI / 2;
     }
   });
 };
@@ -123,9 +122,10 @@ function Movement() {
   const hourWheelRef = useRef();
   const palletRef = useRef();
 
+  const escapementRotation = useRef(0);
   const centerWheelRotation = useRef(0);
-  const thirdWheelRotation = useRef(0);
-  const intermediateWheelRotation = useRef(0);
+  const thirdWheelRotation = useRef(-0.095);
+  const intermediateWheelRotation = useRef(0.1);
   const hourWheelRotation = useRef(0);
 
   const [showDial, setShowDial] = useState(true);
@@ -133,6 +133,7 @@ function Movement() {
   // Hook to handle gear rotations, including pallet oscillation
   useEscapementRotation(
     escapementWheelRef,
+    escapementRotation,
     centerWheelRef,
     centerWheelRotation,
     thirdWheelRef,
@@ -176,7 +177,7 @@ function Movement() {
       {showDial && <Dial />}
       <Pallet
         ref={palletRef}
-        position={[-7.0, 79.6, 0]}
+        position={[0, 79.6, 0]}
         rotation={[0, 0, 0]} // Rotation adjusted in useEscapementRotation
         thickness={2}
         showDial={showDial}

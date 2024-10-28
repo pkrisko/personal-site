@@ -2,13 +2,13 @@ import React, { forwardRef } from 'react';
 import GearPair from '@/components/watch/GearPair';
 
 const IntermediateWheel = forwardRef(({
-  position = [-37.4, 7.1, 6.0],
+  position = [-12.75, 0, 6.0],
   spurTeethCount = 40,
-  spurRadius = 30,
+  spurRadius = 10,
   pinionTeethCount = 10,
-  pinionRadius = 9.2,
-  ringInnerRadius = 4,
-  ringOuterRadius = 11.0,
+  pinionRadius = 2.5,
+  ringInnerRadius = 1.5,
+  ringOuterRadius = 2.5,
 }, ref) => {
 
   return (
@@ -20,7 +20,7 @@ const IntermediateWheel = forwardRef(({
       spurAddendumFactor={1.5}
       spurRadius={spurRadius}
       spurTeethCount={spurTeethCount}
-      pinionAddendumFactor={1.0}
+      pinionAddendumFactor={1.3}
       pinionRadius={pinionRadius}
       pinionTeethCount={pinionTeethCount}
     />

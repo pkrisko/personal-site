@@ -94,7 +94,7 @@ const MovementCanvas = () => {
         <Movement />
 
         {/* Orbit Controls */}
-        <OrbitControls ref={controlsRef} enableZoom={true} target={[0, -25, 0]} />
+        <OrbitControls ref={controlsRef} enableZoom={true} target={[0, 0, 0]} />
       </Canvas>
     </div>
   );

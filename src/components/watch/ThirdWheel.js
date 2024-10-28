@@ -1,27 +1,27 @@
 // ThirdWheel.js
 import React, { forwardRef, useMemo } from 'react';
-import { Box, Cylinder } from '@react-three/drei';
+import { Cylinder } from '@react-three/drei';
 import { MathUtils } from 'three';
 import GearPair from '@/components/watch/GearPair';
 import Hand from '@/components/watch/Hand';
 
 const AXLE_HEIGHT = 22;
-const AXLE_WIDTH = 3.0; // Slightly wider than second hand, in real world would be a tube.
+const AXLE_WIDTH = 1.0; // Slightly wider than second hand, in real world would be a tube.
 const MINUTE_HAND_LENGTH = 50;
 
 const ThirdWheel = forwardRef(({
   position = [0, 0, 4],
   spurTeethCount = 60,
-  spurRadius = 56.7,
+  spurRadius = 19.7,
   pinionAddendumFactor = 1.0,
   pinionTeethCount = 10,
-  pinionRadius = 7.2,
+  pinionRadius = 2.5,
 }, ref) => {
   // Calculate the initial rotation of the seconds hand
   const minuteHandRotation = useMemo(() => {
     const now = new Date();
     const minutes = now.getMinutes() + now.getSeconds() / 60;
-    const angle = MathUtils.degToRad(0 - minutes * 6); // 6 = (360º / 60 minutes)
+    const angle = MathUtils.degToRad(0 - minutes * 6) + 0.095; // 6 = (360º / 60 minutes), with slight offset from Movement.js
     return [0, 0, angle];
   }, []);
 

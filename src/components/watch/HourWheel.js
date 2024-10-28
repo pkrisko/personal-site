@@ -8,14 +8,14 @@ import Spokes from '@/components/watch/Spokes';
 import Hand from '@/components/watch/Hand';
 
 const AXLE_HEIGHT = 15;
-const AXLE_WIDTH = 3.5; // Slightly wider than second hand, in real world would be a tube.
+const AXLE_WIDTH = 1.5; // Slightly wider than second hand, in real world would be a tube.
 const HOUR_HAND_LENGTH = 34;
 
 const HourWheel = forwardRef(({
   position = [0, 0, 8],
   spurTeethCount = 30,
-  axleHoleRadius = 7.2,
-  spurRadius = 27.2,
+  axleHoleRadius = 2.5,
+  spurRadius = 9.5,
 }, ref) => {
   // Calculate the initial rotation of the seconds hand
   const hourHandRotation = useMemo(() => {
@@ -27,8 +27,8 @@ const HourWheel = forwardRef(({
   }, []);
 
   // Ring parameters
-  const ringInnerRadius = axleHoleRadius - 3.5; // Hole size
-  const ringOuterRadius = axleHoleRadius + 1.5; // Outer edge of the ring
+  const ringInnerRadius = axleHoleRadius - 1; // Hole size
+  const ringOuterRadius = axleHoleRadius; // Outer edge of the ring
 
   // Adjusted radii for spokes
   const innerRadius = ringOuterRadius; // Start of spokes
@@ -62,7 +62,8 @@ const HourWheel = forwardRef(({
       <Gear
         numTeeth={spurTeethCount}
         radius={spurRadius}
-        addendumFactor={1.3}
+        module={2}
+        addendumFactor={1.8}
         rotation={[0, 0, 0.07]}
       />
       {/* Central Ring (CD-shaped disc) */}
@@ -73,8 +74,9 @@ const HourWheel = forwardRef(({
       {/* Spokes */}
       <Spokes
         numSpokes={5}
-        innerRadius={innerRadius - 1}
-        outerRadius={outerRadius}
+        thickness={2}
+        innerRadius={innerRadius - 2}
+        outerRadius={outerRadius + 2}
       />
 
       {/* Axle with hole in the middle */}

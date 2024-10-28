@@ -7,7 +7,7 @@ import Gear from '@/components/watch/Gear';
 import SecondHand from '@/components/watch/SecondHand';
 
 export const AXLE_HEIGHT = 28;
-const AXLE_WIDTH = 2.5;
+const AXLE_WIDTH = 0.75;
 
 const EscapementWheel = forwardRef(
   (
@@ -82,23 +82,24 @@ const EscapementWheel = forwardRef(
 
     return (
       <>
-        <mesh
+        <group 
           ref={ref}
-          geometry={geometry}
           position={position}
           rotation={rotation}
           castShadow
           receiveShadow
         >
-          <meshStandardMaterial color={color} />
+          <mesh geometry={geometry} rotation={[0, 0, 0.022]} castShadow receiveShadow>
+            <meshStandardMaterial color={color} />
+          </mesh>
           <Gear
             position={[0, 0, 2]}
             numTeeth={8}
-            radius={7.2}
+            radius={2.5}
             clearance={0.0}
             backlash={0.0}
             thickness={2}
-            module={3}
+            module={1}
             color="#EAECEC"
             addendumFactor={1}
           />
@@ -113,7 +114,7 @@ const EscapementWheel = forwardRef(
             <meshStandardMaterial color="#EAECEC" />
           </Cylinder>
           <SecondHand />
-        </mesh>
+        </group>
       </>
     );
   }
