@@ -79,7 +79,6 @@ const MovementCanvas = () => {
           >
             <ArrowRight size={32} />
           </DirectionalButton>
-
         </div>
       </div>
 
@@ -90,11 +89,10 @@ const MovementCanvas = () => {
         <ambientLight intensity={0.5} />
         <DirectionalLight />
 
-        {/* Watch Movement Meshes  */}
+        {/* Watch Movement Meshes (Gears, Hands, etc.)  */}
         <Movement />
 
-        {/* Orbit Controls */}
-        <OrbitControls ref={controlsRef} enableZoom={true} target={[0, 0, 0]} />
+        <OrbitControls ref={controlsRef} enableZoom={true} target={[0, -25, 0]} />
       </Canvas>
     </div>
   );
