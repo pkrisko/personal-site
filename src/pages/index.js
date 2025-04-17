@@ -50,7 +50,7 @@ export default function Home() {
         <p className="lg:w-[42%] self-start py-2 lg:py-0 text-xl">
           I&apos;m Patrick Krisko, a full-stack software developer with 7+ years of experience in web tech. I&apos;m
           currently making pixels go <em>brrr</em> at
-          <a href="https://www.hodinkee.com/" target="_blank" className="ml-1">Hodinkee</a>.
+          <a href="https://underdogfantasy.com/" target="_blank" className="ml-1">Underdog</a>.
           <br/><br/>
           I love bringing <em>ideas</em> and <em>designs</em> to life. 
         </p>
