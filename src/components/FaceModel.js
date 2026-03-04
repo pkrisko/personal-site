@@ -108,17 +108,56 @@ function GlobeFace() {
       if (child.isMesh) child.material = material;
     });
 
-    // Map mouse position to target rotation angles
-    const onMouseMove = (e) => {
-      // Normalise to -1..+1 from viewport center
-      const nx = (e.clientX / window.innerWidth) * 2 - 1;
-      const ny = (e.clientY / window.innerHeight) * 2 - 1;
-      target.current.y = nx * 0.45;   // left/right  ±~26°
-      target.current.x = ny * 0.2;    // up/down     ±~11°
-    };
+    const isTouchDevice = navigator.maxTouchPoints > 0 || 'ontouchstart' in window;
 
-    window.addEventListener('mousemove', onMouseMove);
-    return () => window.removeEventListener('mousemove', onMouseMove);
+    if (isTouchDevice) {
+      // Mobile: left/right tilt via gamma (portrait orientation).
+      // gamma ranges -90..90°; clamp to ±30° for a comfortable tilt range.
+      const onDeviceOrientation = (e) => {
+        const gamma = e.gamma ?? 0;
+        const clamped = Math.max(-30, Math.min(30, gamma));
+        target.current.y = (clamped / 30) * 0.45;
+      };
+
+      const startListening = () => {
+        window.addEventListener('deviceorientation', onDeviceOrientation);
+      };
+
+      const onFirstTouch = async () => {
+        // iOS 13+ requires explicit permission from a user-gesture handler
+        if (
+          typeof DeviceOrientationEvent !== 'undefined' &&
+          typeof DeviceOrientationEvent.requestPermission === 'function'
+        ) {
+          try {
+            const result = await DeviceOrientationEvent.requestPermission();
+            if (result === 'granted') startListening();
+          } catch (_) {
+            // permission denied or not supported — silently skip
+          }
+        } else {
+          startListening();
+        }
+      };
+
+      window.addEventListener('touchstart', onFirstTouch, { once: true });
+
+      return () => {
+        window.removeEventListener('touchstart', onFirstTouch);
+        window.removeEventListener('deviceorientation', onDeviceOrientation);
+      };
+    } else {
+      // Desktop: follow the mouse cursor
+      const onMouseMove = (e) => {
+        const nx = (e.clientX / window.innerWidth) * 2 - 1;
+        const ny = (e.clientY / window.innerHeight) * 2 - 1;
+        target.current.y = nx * 0.45;   // left/right  ±~26°
+        target.current.x = ny * 0.2;    // up/down     ±~11°
+      };
+
+      window.addEventListener('mousemove', onMouseMove);
+      return () => window.removeEventListener('mousemove', onMouseMove);
+    }
   }, [scene, camera]);
 
   useFrame(() => {
