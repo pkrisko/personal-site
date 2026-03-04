@@ -48,20 +48,25 @@ export default function Home() {
     <CustomHead />
     <Navigation />
     <div className="p-6">
-      <main className="flex min-h-screen max-w-[1400px] flex-col items-start justify-between lg:mx-auto" ref={containerRef}>
-        <div className="mt-16 w-full flex justify-center">
-          <FaceModel />
-        </div>
-        <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex mb-10">
-          <h1 className="font-sans text-5xl lg:text-8xl h-24 lg:h-[192px]">{headline1}<br/>{headline2}</h1>
-        </div>
-        <p className="lg:w-[42%] self-start py-2 lg:py-0 text-xl">
-          I&apos;m Patrick Krisko, a full-stack software developer with 7+ years of experience in web tech. I&apos;m
-          currently making pixels go <em>brrr</em> at
-          <a href="https://underdogfantasy.com/" target="_blank" className="ml-1">Underdog</a>.
-          <br/><br/>
-          I love bringing <em>ideas</em> and <em>designs</em> to life. 
-        </p>
+      <main className="max-w-[1400px] flex flex-col lg:mx-auto lg:mt-32" ref={containerRef}>
+        {/* Hero — stacked on mobile, side-by-side on lg+ */}
+        <section className="flex flex-col lg:flex-row">
+          {/* Left: headline + bio */}
+          <div className="flex flex-col justify-center w-full lg:w-1/2 pt-20 pb-8 lg:py-0">
+            <h1 className="font-sans text-5xl lg:text-8xl">{headline1}<br/>{headline2}</h1>
+            <p className="text-xl mt-6">
+              I&apos;m Patrick Krisko, a full-stack software developer with 7+ years of experience in web tech. I&apos;m
+              currently making pixels go <em>brrr</em> at
+              <a href="https://underdogfantasy.com/" target="_blank" className="ml-1">Underdog</a>.
+              <br/><br/>
+              I love bringing <em>ideas</em> and <em>designs</em> to life.
+            </p>
+          </div>
+          {/* Right: height fixed on mobile; on desktop flex stretch matches left column height */}
+          <div className="w-full h-[60vh] lg:w-1/2 lg:[50vh]">
+            <FaceModel />
+          </div>
+        </section>
         {/* Container with static height to reduce Cumulative Layout Shift */}
         <div className="h-[540px]">
           <RecursiveTreeSketch containerRef={containerRef} />

@@ -2,7 +2,7 @@
 
 import { Suspense, useRef, useEffect } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { useGLTF, OrbitControls } from '@react-three/drei';
+import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 
 const vertexShader = `
@@ -72,6 +72,10 @@ function GlobeFace() {
   const { scene } = useGLTF('/3d/krisko-face.glb');
   const { camera } = useThree();
 
+  // Target rotation driven by mouse; current is the smoothed value
+  const target = useRef({ x: 0, y: 0 });
+  const current = useRef({ x: 0, y: 0 });
+
   useEffect(() => {
     // Center and auto-fit camera to the model's bounding box
     const box = new THREE.Box3().setFromObject(scene);
@@ -85,7 +89,6 @@ function GlobeFace() {
     camera.far = maxDim * 100;
     camera.updateProjectionMatrix();
 
-    // Derive spacing from model height so lines scale with any GLB
     const numHLines = 64;
     const numVLines = 64;
     const hSpacing = size.y / numHLines;
@@ -102,16 +105,30 @@ function GlobeFace() {
     });
 
     scene.traverse((child) => {
-      if (child.isMesh) {
-        child.material = material;
-      }
+      if (child.isMesh) child.material = material;
     });
+
+    // Map mouse position to target rotation angles
+    const onMouseMove = (e) => {
+      // Normalise to -1..+1 from viewport center
+      const nx = (e.clientX / window.innerWidth) * 2 - 1;
+      const ny = (e.clientY / window.innerHeight) * 2 - 1;
+      target.current.y = nx * 0.45;   // left/right  ±~26°
+      target.current.x = ny * 0.2;    // up/down     ±~11°
+    };
+
+    window.addEventListener('mousemove', onMouseMove);
+    return () => window.removeEventListener('mousemove', onMouseMove);
   }, [scene, camera]);
 
-  useFrame(({ clock }) => {
-    if (groupRef.current) {
-      groupRef.current.rotation.y = clock.elapsedTime * 0.18;
-    }
+  useFrame(() => {
+    if (!groupRef.current) return;
+    // Exponential ease toward target — tweak 0.06 for faster/slower drag
+    const ease = 0.06;
+    current.current.x += (target.current.x - current.current.x) * ease;
+    current.current.y += (target.current.y - current.current.y) * ease;
+    groupRef.current.rotation.x = current.current.x;
+    groupRef.current.rotation.y = current.current.y;
   });
 
   return (
@@ -123,20 +140,14 @@ function GlobeFace() {
 
 export default function FaceModel() {
   return (
-    <div className="w-full" style={{ height: '90vh' }}>
+    <div className="w-full h-full">
       <Canvas
         gl={{ antialias: true }}
-        camera={{ fov: 30 }}
+        camera={{ fov: 50 }}
       >
         <Suspense fallback={null}>
           <GlobeFace />
         </Suspense>
-        <OrbitControls
-          enableZoom={false}
-          enablePan={false}
-          minPolarAngle={Math.PI / 4}
-          maxPolarAngle={(3 * Math.PI) / 4}
-        />
       </Canvas>
     </div>
   );
