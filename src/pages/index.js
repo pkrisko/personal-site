@@ -23,6 +23,11 @@ const MeshSketch = dynamic(
   { ssr: false }
 );
 
+const FaceModel = dynamic(
+  () => import('@/components/FaceModel'),
+  { ssr: false }
+);
+
 export default function Home() {
   const containerRef = useRef(null);
 
@@ -44,7 +49,10 @@ export default function Home() {
     <Navigation />
     <div className="p-6">
       <main className="flex min-h-screen max-w-[1400px] flex-col items-start justify-between lg:mx-auto" ref={containerRef}>
-        <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex mt-20 mb-10">
+        <div className="mt-16 w-full flex justify-center">
+          <FaceModel />
+        </div>
+        <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex mb-10">
           <h1 className="font-sans text-5xl lg:text-8xl h-24 lg:h-[192px]">{headline1}<br/>{headline2}</h1>
         </div>
         <p className="lg:w-[42%] self-start py-2 lg:py-0 text-xl">
