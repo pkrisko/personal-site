@@ -4,7 +4,7 @@ import { Copyright, GithubLogo, LinkedinLogo } from '@phosphor-icons/react';
 const Footer = () => (
   <div className="mt-4">
     <div className="flex items-center">
-      <Copyright size={20} className="mr-1" /> 2024 Patrick Krisko.
+      <Copyright size={20} className="mr-1" /> 2026 Patrick Krisko.
     </div>
     <div className="flex items-center mt-1">
       <LinkedinLogo size={20} className="mr-1" />
