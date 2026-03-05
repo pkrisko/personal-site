@@ -63,7 +63,7 @@ export default function Home() {
             </p>
           </div>
           {/* Model: first on mobile (below nav), right col on desktop */}
-          <div className="order-1 lg:order-2 pt-20 h-[60vh] lg:pt-0 lg:h-auto">
+          <div className="order-1 lg:order-2 pt-20 h-[80vh] lg:pt-0 lg:h-[70vh]">
             <FaceModel />
           </div>
         </section>
