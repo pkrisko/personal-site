@@ -154,23 +154,26 @@ export default function EmailCopy() {
 
   return (
     <button
-      onMouseEnter={trigger}
       onClick={handleClick}
-      className="font-fantastique text-lg cursor-pointer select-none group text-left bg-transparent border-0 p-0 text-current"
+      className="font-fantastique text-lg cursor-pointer select-none group text-left bg-transparent border-0 p-0 text-current opacity-100 hover:opacity-70 transition-opacity duration-200"
       aria-label="Copy email address"
     >
-      <span className="relative inline-flex items-center gap-1.5 leading-none">
-        {isCopied ? (
-          <>
-            <CopySimple size={18} weight="bold" />
-            copied to clipboard
-          </>
-        ) : (
-          displayText
+      <span className="relative inline-flex items-center leading-none">
+        {/* layout anchor — keeps container size stable across all phases */}
+        <span className={isCopied ? 'invisible' : ''}>{displayText}</span>
+        {isCopied && (
+          <span className="absolute inset-y-0 left-0 flex items-center">
+            {/* relative scope so the underline below is sized to this content only */}
+            <span className="relative inline-flex items-center gap-1.5">
+              <CopySimple size={18} weight="bold" className="shrink-0" />
+              copied to clipboard
+              <span className="absolute -bottom-0.5 left-0 w-full h-px bg-current" />
+            </span>
+          </span>
         )}
         <span
           className={`absolute -bottom-0.5 left-0 h-px bg-current transition-[width] duration-300 ${
-            isActive ? 'w-full' : 'w-0 group-hover:w-full'
+            isCopied ? 'hidden' : isActive ? 'w-full' : 'w-0 group-hover:w-full'
           }`}
         />
       </span>
