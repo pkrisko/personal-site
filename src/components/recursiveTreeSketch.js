@@ -32,7 +32,7 @@ const RecursiveTreeSketch = ({ containerRef }) => {
           ? Math.max(0, window.scrollY - entryScrollY - 100)
           : 0;
 
-        let a = p.map(scrollIn, 0, 500, 0, 75);
+        let a = p.map(scrollIn, 0, 600, 0, 75);
         theta = p.radians(a);
 
         p.translate(p.width / 2, p.height);

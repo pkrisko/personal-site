@@ -1,5 +1,7 @@
 import Link from 'next/link';
-import Globe from '@/components/globe';
+import dynamic from 'next/dynamic';
+
+const Globe = dynamic(() => import('@/components/globe'), { ssr: false });
 
 const Navigation = () => {
   return (

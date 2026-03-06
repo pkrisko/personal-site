@@ -117,6 +117,27 @@ export default function Home() {
             </p>
           </ExperienceBlock>
           <ExperienceBlock
+            title="Auto-Accept Odds"
+            subTitle="Underdog"
+            src="/images/auto-accept-preview.png"
+          >
+            <p className="text-xl">
+              Authored the RFC and shipped auto-accept odds changes, letting users opt in to automatic price updates at
+              submission. Eliminated the #1 user complaint, drove a <em>2% increase in entry conversion</em>, and
+              contributed over $2M in additional annual collected fees.
+            </p>
+          </ExperienceBlock>
+          <ExperienceBlock
+            title="Real-Time Pricing Pipeline"
+            subTitle="Underdog"
+            src="/images/karafka-preview.png"
+          >
+            <p className="text-xl">
+              Implemented a real-time data pipeline with Kafka (Karafka) consumers to process fantasy and sportsbook
+              pricing feeds, enabling the company to <em>generate and manage odds in-house</em> at scale.
+            </p>
+          </ExperienceBlock>
+          <ExperienceBlock
             title="Peril Prediction"
             subTitle="Asurion"
             src="/images/peril-preview.png"

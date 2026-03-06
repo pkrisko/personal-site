@@ -201,9 +201,10 @@ export default function FaceModel() {
       {showTiltButton && (
         <button
           onClick={enableTilt}
-          className="absolute bottom-6 left-1/2 -translate-x-1/2 px-4 py-2 text-xs tracking-widest text-white/50 border border-white/20 rounded-full backdrop-blur-sm"
+          className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 font-fantastique text-xs tracking-widest text-white/40 hover:text-white/70 transition-colors duration-300"
         >
-          tap to enable tilt
+          <span className="w-1.5 h-1.5 rounded-full bg-white/40 animate-pulse" />
+          tap to tilt
         </button>
       )}
     </div>
