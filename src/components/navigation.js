@@ -9,10 +9,7 @@ const Navigation = () => {
     <nav className="absolute top-0 left-0 p-6 w-full 2xl:max-w-[1400px] 2xl:left-1/2 2xl:p-0 2xl:transform 2xl:-translate-x-1/2 2xl:pt-6">
       <ul className="flex justify-between items-center">
         <li className="break-word">
-          <Link className="flex items-center -ml-2" href="/">
-            <Globe />
-            {/* Patrick Krisko */}
-          </Link>
+          <Globe />
         </li>
         {/* <li>
           <a href="https://www.linkedin.com/in/pkrisko" className="text-lg">Portfolio</a>
