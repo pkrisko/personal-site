@@ -28,6 +28,11 @@ const FaceModel = dynamic(
   { ssr: false }
 );
 
+const PipelineSketch = dynamic(
+  () => import('@/components/pipelineSketch'),
+  { ssr: false }
+);
+
 export default function Home() {
   const containerRef = useRef(null);
 
@@ -55,15 +60,15 @@ export default function Home() {
           <div className="order-2 lg:order-1 flex flex-col justify-center pb-8 lg:py-0">
             <h1 className="font-sans text-5xl lg:text-8xl min-h-[96px] lg:min-h-[192px]">{headline1}<br/>{headline2}</h1>
             <p className="text-xl mt-6">
-              I&apos;m Patrick Krisko, a full-stack software developer with 7+ years of experience in web tech. I&apos;m
-              currently making pixels go <em>brrr</em> at
+              I&apos;m Patrick Krisko, a full-stack software developer with 8+ years of experience in web tech. Most recently
+              I was making data go <em>brrr</em> at
               <a href="https://underdogfantasy.com/" target="_blank" className="ml-1">Underdog</a>.
               <br/><br/>
               I love bringing <em>ideas</em> and <em>designs</em> to life.
             </p>
           </div>
           {/* Model: first on mobile (below nav), right col on desktop */}
-          <div className="order-1 lg:order-2 pt-20 h-[80vh] lg:pt-0 lg:h-[70vh]">
+          <div className="order-1 lg:order-2 pt-20 h-[70vh] lg:pt-0 lg:h-[70vh]">
             <FaceModel />
           </div>
         </section>
@@ -77,6 +82,27 @@ export default function Home() {
         </div>
         <div className="h-px w-full bg-white"/>
         <div className="grid lg:grid-cols-3 gap-6 mt-6">
+          <ExperienceBlock
+            title="Auto-Accept Odds"
+            subTitle="Underdog"
+            src="/images/auto-accept-preview.png"
+          >
+            <p className="text-xl">
+              Authored RFC and shipped auto-accept odds changes, letting users opt in to automatic price updates at
+              submission. Eliminated the #1 user complaint, drove a <em>2% increase in entry conversion</em>, and
+              contributed over $2M in additional annual collected fees.
+            </p>
+          </ExperienceBlock>
+          <ExperienceBlock
+            title="Real-Time Pricing Pipeline"
+            subTitle="Underdog"
+            media={<PipelineSketch />}
+          >
+            <p className="text-xl">
+              Implemented a real-time data pipeline with Kafka (Karafka) consumers to process fantasy and sportsbook
+              pricing feeds, enabling the company to generate and manage odds in-house and at scale.
+            </p>
+          </ExperienceBlock>
           <ExperienceBlock
             title="10:10"
             subTitle="Hodinkee"
@@ -117,27 +143,6 @@ export default function Home() {
             </p>
           </ExperienceBlock>
           <ExperienceBlock
-            title="Auto-Accept Odds"
-            subTitle="Underdog"
-            src="/images/auto-accept-preview.png"
-          >
-            <p className="text-xl">
-              Authored the RFC and shipped auto-accept odds changes, letting users opt in to automatic price updates at
-              submission. Eliminated the #1 user complaint, drove a <em>2% increase in entry conversion</em>, and
-              contributed over $2M in additional annual collected fees.
-            </p>
-          </ExperienceBlock>
-          <ExperienceBlock
-            title="Real-Time Pricing Pipeline"
-            subTitle="Underdog"
-            src="/images/karafka-preview.png"
-          >
-            <p className="text-xl">
-              Implemented a real-time data pipeline with Kafka (Karafka) consumers to process fantasy and sportsbook
-              pricing feeds, enabling the company to <em>generate and manage odds in-house</em> at scale.
-            </p>
-          </ExperienceBlock>
-          <ExperienceBlock
             title="Peril Prediction"
             subTitle="Asurion"
             src="/images/peril-preview.png"
@@ -162,7 +167,7 @@ export default function Home() {
           </ExperienceBlock>
         </div>
         <div className="mt-6 border border-top border-white w-full flex items-center border-x-0 py-6 justify-center">
-          <h3 className="font-fantastique text-2xl">Let&apos;s build something <em>great</em> together.</h3>
+          <h3 className="font-fantastique text-2xl">Let&apos;s build something together.</h3>
         </div>
         <div className="-mt-5 -ml-[22px]">
           <MeshSketch containerRef={containerRef} />

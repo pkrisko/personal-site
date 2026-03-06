@@ -55,7 +55,7 @@ const SpinningGlobe = () => {
 
   useFrame(() => {
     if (!groupRef.current) return;
-    groupRef.current.rotation.y += hovered ? 0.01 : 0.006;
+    groupRef.current.rotation.y += hovered ? 0.008 : 0.002;
   });
 
   return (

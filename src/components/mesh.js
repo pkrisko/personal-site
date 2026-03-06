@@ -18,16 +18,16 @@ const SpringGridSketch = ({ containerRef, className }) => {
       let numCols;
       let EPS = 0.00000001;
 
+      const isMobile = window.innerWidth < 1024;
       let array = [];
       let wave = {
         x: 0,
         y: 0,
         angle: 0, // Initial angle
-        angularVelocity: 0.005, // Rate of change of the angle
-        amplitude: 9.0, // Amplitude of the wave's velocity
-        // intensity: 1.995, // Intensity of the wave
-        intensity: 3.2,
-        delta: 70, // Spread of the wave's influence
+        angularVelocity: isMobile ? 0.013 : 0.003, // Rate of change of the angle
+        amplitude: 7.0, // Amplitude of the wave's velocity
+        intensity: 2.5, // Intensity of the wave
+        delta: 75, // Spread of the wave's influence
       };
 
       class Dot {

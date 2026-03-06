@@ -78,7 +78,7 @@ const fragmentShader = `
 // regular DOM event listeners work reliably on mobile.
 function GlobeFace({ target }) {
   const groupRef = useRef();
-  const { scene } = useGLTF('/3d/krisko-face.glb');
+  const { scene } = useGLTF('/3d/krisko-face-decimate-blender.glb');
   const { camera } = useThree();
   const current = useRef({ x: 0, y: 0 });
 
@@ -201,7 +201,7 @@ export default function FaceModel() {
       {showTiltButton && (
         <button
           onClick={enableTilt}
-          className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 font-fantastique text-xs tracking-widest text-white/40 hover:text-white/70 transition-colors duration-300"
+          className="absolute bottom-14 left-1/2 -translate-x-1/2 flex items-center gap-2 font-fantastique text-xs tracking-widest text-white/40 hover:text-white/70 transition-colors duration-300"
         >
           <span className="w-1.5 h-1.5 rounded-full bg-white/40 animate-pulse" />
           tap to tilt
@@ -210,3 +210,5 @@ export default function FaceModel() {
     </div>
   );
 }
+
+useGLTF.preload('/3d/krisko-face-decimate-blender.glb');
