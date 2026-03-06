@@ -4,19 +4,16 @@ import { useState, useRef, useCallback, useEffect } from 'react';
 import { CopySimple } from '@phosphor-icons/react';
 
 const EMAIL = 'patrick.krisko@gmail.com';
-// Rich set — mixed case + symbols gives a more cinematic departure-board feel
 const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@.-_#!$%&?';
-const SCRAMBLE_MS = 700;  // chaos phase
-const COPIED_MS = 2000;   // how long "copied to clipboard" lingers
-const REVERT_MS = 700;    // scramble-back phase
-const FRAME_MS = 60;      // ~16fps — slow enough to read each flap
+const SCRAMBLE_MS = 700;
+const COPIED_MS = 2000;
+const REVERT_MS = 700;
+const FRAME_MS = 60;
 
 function randomChar() {
   return CHARS[Math.floor(Math.random() * CHARS.length)];
 }
 
-// Each char gets a random threshold (0–1) at which it "locks in" during revert.
-// This gives an organic sparkle instead of a strict left-to-right wave.
 function makeThresholds(length) {
   return Array.from({ length }, () => Math.random());
 }
@@ -28,54 +25,65 @@ function scrambleToward(target, progress, thresholds) {
     .join('');
 }
 
-// --- Sound effects via Web Audio API (no external files) ---
+// --- Split-flap audio ---
 
-function playScrambleSound() {
+// iOS Safari requires that AudioContext is created AND a sound is scheduled
+// within the same synchronous call stack as a trusted user gesture (click/touch).
+// Simply creating or resuming the context is not sufficient — you must play
+// at least a silent buffer to fully unlock it.
+function unlockAudioContext(ctxRef) {
   try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const duration = 0.08;
-    const buf = ctx.createBuffer(1, ctx.sampleRate * duration, ctx.sampleRate);
-    const data = buf.getChannelData(0);
-    for (let i = 0; i < data.length; i++) {
-      // White noise decaying quickly — mechanical shuffle
-      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * 0.02));
+    if (!ctxRef.current) {
+      ctxRef.current = new (window.AudioContext || window.webkitAudioContext)();
     }
+    const ctx = ctxRef.current;
+    if (ctx.state === 'suspended') ctx.resume();
+    // Schedule a silent 1-sample buffer — required to unlock on iOS
+    const silent = ctx.createBuffer(1, 1, ctx.sampleRate);
     const src = ctx.createBufferSource();
-    src.buffer = buf;
-    const gain = ctx.createGain();
-    gain.gain.value = 0.18;
-    src.connect(gain);
-    gain.connect(ctx.destination);
-    src.start();
-    src.onended = () => ctx.close();
+    src.buffer = silent;
+    src.connect(ctx.destination);
+    src.start(0);
   } catch (_) {}
 }
 
-function playCopiedSound() {
+function playFlap(ctx, { freq = 3200, volume = 0.22, decayMs = 4 } = {}) {
+  if (!ctx || ctx.state !== 'running') return;
   try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const osc = ctx.createOscillator();
+    const len = Math.ceil(ctx.sampleRate * 0.015);
+    const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    const decaySamples = ctx.sampleRate * (decayMs / 1000);
+    for (let i = 0; i < len; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / decaySamples);
+    }
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.value = freq + (Math.random() - 0.5) * 600;
+    filter.Q.value = 1.2;
     const gain = ctx.createGain();
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(880, ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(1320, ctx.currentTime + 0.06);
-    gain.gain.setValueAtTime(0.15, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.18);
-    osc.connect(gain);
+    gain.gain.value = volume;
+    const src = ctx.createBufferSource();
+    src.buffer = buf;
+    src.connect(filter);
+    filter.connect(gain);
     gain.connect(ctx.destination);
-    osc.start();
-    osc.stop(ctx.currentTime + 0.2);
-    osc.onended = () => ctx.close();
+    src.start();
   } catch (_) {}
+}
+
+function playSettle(ctx) {
+  playFlap(ctx, { freq: 700, volume: 0.28, decayMs: 10 });
 }
 
 export default function EmailCopy() {
-  const [phase, setPhase] = useState('idle'); // idle | scrambling | copied | reverting
+  const [phase, setPhase] = useState('idle');
   const [displayText, setDisplayText] = useState(EMAIL);
   const intervalRef = useRef(null);
   const timeoutRef = useRef(null);
   const activeRef = useRef(false);
   const thresholdsRef = useRef([]);
+  const audioCtxRef = useRef(null);
 
   const clearTimers = useCallback(() => {
     clearInterval(intervalRef.current);
@@ -84,27 +92,33 @@ export default function EmailCopy() {
 
   useEffect(() => () => clearTimers(), [clearTimers]);
 
+  // Desktop: unlock on first interaction anywhere on the page so hover works.
+  useEffect(() => {
+    const onFirstInteraction = () => unlockAudioContext(audioCtxRef);
+    document.addEventListener('pointerdown', onFirstInteraction, { once: true });
+    return () => document.removeEventListener('pointerdown', onFirstInteraction);
+  }, []);
+
   const trigger = useCallback(() => {
     if (activeRef.current) return;
     activeRef.current = true;
 
     navigator.clipboard?.writeText(EMAIL).catch(() => {});
-    playScrambleSound();
+
+    const ctx = audioCtxRef.current;
 
     setPhase('scrambling');
 
-    // Phase 1: chaos — every character flips randomly each frame
     intervalRef.current = setInterval(() => {
       setDisplayText(EMAIL.split('').map(() => randomChar()).join(''));
+      playFlap(ctx);
     }, FRAME_MS);
 
-    // Phase 2: snap to "copied to clipboard"
     timeoutRef.current = setTimeout(() => {
       clearInterval(intervalRef.current);
-      playCopiedSound();
+      playSettle(ctx);
       setPhase('copied');
 
-      // Phase 3: sparkle-revert back to email
       timeoutRef.current = setTimeout(() => {
         setPhase('reverting');
         thresholdsRef.current = makeThresholds(EMAIL.length);
@@ -115,28 +129,36 @@ export default function EmailCopy() {
           progress += 1 / steps;
           if (progress >= 1) {
             clearInterval(intervalRef.current);
+            playSettle(ctx);
             setDisplayText(EMAIL);
             setPhase('idle');
             activeRef.current = false;
           } else {
             setDisplayText(scrambleToward(EMAIL, progress, thresholdsRef.current));
+            playFlap(ctx, { volume: 0.15 });
           }
         }, FRAME_MS);
       }, COPIED_MS);
     }, SCRAMBLE_MS);
   }, [clearTimers]);
 
+  // Mobile (iOS/Android): click is a trusted gesture — unlock audio here
+  // synchronously before trigger() runs, so ctx.state is 'running' in time.
+  const handleClick = useCallback(() => {
+    unlockAudioContext(audioCtxRef);
+    trigger();
+  }, [trigger]);
+
   const isCopied = phase === 'copied';
   const isActive = phase !== 'idle';
 
   return (
     <button
-      onClick={trigger}
       onMouseEnter={trigger}
+      onClick={handleClick}
       className="font-fantastique text-lg cursor-pointer select-none group text-left bg-transparent border-0 p-0 text-current"
       aria-label="Copy email address"
     >
-      {/* Underline lives on this inner span so it only spans the content width */}
       <span className="relative inline-flex items-center gap-1.5 leading-none">
         {isCopied ? (
           <>
