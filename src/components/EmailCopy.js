@@ -155,7 +155,7 @@ export default function EmailCopy() {
   return (
     <button
       onClick={handleClick}
-      className="font-fantastique text-lg cursor-pointer select-none group text-left bg-transparent border-0 p-0 text-current opacity-100 hover:opacity-70 transition-opacity duration-200"
+      className="font-fantastique text-lg cursor-pointer select-none group text-left bg-transparent border-0 p-0 text-current opacity-100 lg:hover:opacity-70 transition-opacity duration-200"
       aria-label="Copy email address"
     >
       <span className="relative inline-flex items-center leading-none">
