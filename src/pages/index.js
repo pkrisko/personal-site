@@ -126,7 +126,8 @@ export default function Home() {
               pages. Data merchandized and queried entirely through Algolia. Led to an increase in qualified sessions
               and SEO organic traffic.
             <br />
-            <a href="https://shop.hodinkee.com/collections/cartier-brand" target="_blank">See an example.</a>
+            {/* RIP */}
+            {/* <a href="https://shop.hodinkee.com/collections/cartier-brand" target="_blank">See an example.</a> */}
             </p>
           </ExperienceBlock>
           <ExperienceBlock
