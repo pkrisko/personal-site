@@ -59,6 +59,7 @@ const SpinningGlobe = () => {
   const { latLines, lonData } = useMemo(buildSeparatedLines, []);
   // { active, t, indices }
   const pulseRef = useRef({ active: false, t: 0, indices: [] });
+  const autoTimerRef = useRef(0);
 
   const handleClick = () => {
     // Don't restart if already pulsing
@@ -73,6 +74,12 @@ const SpinningGlobe = () => {
     if (!groupRef.current) return;
     // groupRef.current.rotation.y += hoveredRef.current ? 0.008 : 0.002;
     groupRef.current.rotation.y += 0.002;
+
+    autoTimerRef.current += delta;
+    if (autoTimerRef.current >= 10) {
+      autoTimerRef.current = 0;
+      handleClick();
+    }
 
     if (!pulseRef.current.active) return;
 

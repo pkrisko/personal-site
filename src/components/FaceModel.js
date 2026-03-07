@@ -25,6 +25,7 @@ const fragmentShader = `
   uniform float uHSpacing;
   uniform float uNumV;
   uniform float uLineWidth;
+  uniform float uPulse;
 
   const float TWO_PI = 6.28318530718;
 
@@ -62,7 +63,7 @@ const fragmentShader = `
     vec3 baseColor = vec3(0.02 + 0.18 * ndotl + 0.03 * ndotv);
 
     // Lines brighter toward silhouette edges, slightly warmed by light
-    float lineBrightness = 0.65 + 0.20 * fresnel + 0.15 * ndotl;
+    float lineBrightness = (0.65 + 0.20 * fresnel + 0.15 * ndotl) * uPulse;
     vec3 lineColor = vec3(lineBrightness);
 
     vec3 color = mix(baseColor, lineColor, line);
@@ -76,8 +77,12 @@ const fragmentShader = `
 // GlobeFace only handles rendering + camera setup.
 // Input (mouse / device orientation) is managed by FaceModel so that
 // regular DOM event listeners work reliably on mobile.
+const PULSE_INTERVAL = 10;   // seconds between pulses
+const PULSE_DURATION = 1.5;  // seconds for one pulse envelope
+
 function GlobeFace({ target }) {
   const groupRef = useRef();
+  const materialRef = useRef();
   const { scene } = useGLTF('/3d/krisko-face-decimate-blender.glb');
   const { camera } = useThree();
   const current = useRef({ x: 0, y: 0 });
@@ -106,22 +111,32 @@ function GlobeFace({ target }) {
         uHSpacing: { value: hSpacing },
         uNumV: { value: numVLines },
         uLineWidth: { value: 1.5 },
+        uPulse: { value: 1.0 },
       },
       side: THREE.FrontSide,
     });
+    materialRef.current = material;
 
     scene.traverse((child) => {
       if (child.isMesh) child.material = material;
     });
   }, [scene, camera]);
 
-  useFrame(() => {
+  useFrame(({ clock }) => {
     if (!groupRef.current) return;
     const ease = 0.06;
     current.current.x += (target.current.x - current.current.x) * ease;
     current.current.y += (target.current.y - current.current.y) * ease;
     groupRef.current.rotation.x = current.current.x;
     groupRef.current.rotation.y = current.current.y;
+
+    if (materialRef.current) {
+      const phase = clock.elapsedTime % PULSE_INTERVAL;
+      const pulse = phase < PULSE_DURATION
+        ? 1.0 + 0.45 * Math.sin((phase / PULSE_DURATION) * Math.PI)
+        : 1.0;
+      materialRef.current.uniforms.uPulse.value = pulse;
+    }
   });
 
   return (
@@ -199,13 +214,17 @@ export default function FaceModel() {
         </Suspense>
       </Canvas>
       {showTiltButton && (
-        <button
-          onClick={enableTilt}
-          className="absolute bottom-14 left-1/2 -translate-x-1/2 flex items-center gap-2 font-fantastique text-xs tracking-widest text-white/40 hover:text-white/70 transition-colors duration-300"
-        >
-          <span className="w-1.5 h-1.5 rounded-full bg-white/40 animate-pulse" />
-          tap to tilt
-        </button>
+        <>
+          {/* Transparent overlay covers the entire canvas, captures any tap */}
+          <div
+            className="absolute inset-0 z-10 cursor-pointer"
+            onClick={enableTilt}
+          />
+          <div className="absolute bottom-14 left-1/2 -translate-x-1/2 flex items-center gap-2 font-fantastique text-xs tracking-widest text-white/40 pointer-events-none z-20">
+            <span className="w-1.5 h-1.5 rounded-full bg-white/40 animate-pulse" />
+            tap to tilt
+          </div>
+        </>
       )}
     </div>
   );

@@ -61,7 +61,7 @@ export default function Home() {
             <h1 className="font-sans text-5xl lg:text-8xl min-h-[96px] lg:min-h-[192px]">{headline1}<br/>{headline2}</h1>
             <p className="text-xl mt-6">
               I&apos;m Patrick Krisko, a full-stack software developer with 8+ years of experience in web tech. Most recently
-              I was making data go <em>brrr</em> at
+              I've been making data go <em>brrr</em> at
               <a href="https://underdogfantasy.com/" target="_blank" className="ml-1">Underdog</a>.
               <br/><br/>
               I love bringing <em>ideas</em> and <em>designs</em> to life.
