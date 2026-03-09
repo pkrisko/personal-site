@@ -7,6 +7,7 @@ import Navigation from '@/components/navigation';
 import ExperienceBlock from '@/components/experienceBlock';
 import Footer from '@/components/footer';
 import dynamic from 'next/dynamic';
+import HodinkeeTimeOverlay from '@/components/HodinkeeTimeOverlay';
 
 const CellularAutomotaSketch = dynamic(
   () => import('@/components/sketch'),
@@ -78,7 +79,7 @@ export default function Home() {
         </div>
         <div className="h-px w-full bg-white"/>
         <div className="flex justify-center w-full py-6">
-          <h3 className="text-3xl w-fit font-fantastique">Works</h3>
+          <h3 className="text-3xl w-fit font-sans">Works</h3>
         </div>
         <div className="h-px w-full bg-white"/>
         <div className="grid lg:grid-cols-3 gap-6 mt-6">
@@ -106,7 +107,7 @@ export default function Home() {
           <ExperienceBlock
             title="10:10"
             subTitle="Hodinkee"
-            src="https://framerusercontent.com/images/MhiBwbuhgwo1AmTiM5FjGiKdF0.jpg?scale-down-to=1024"
+            media={<HodinkeeTimeOverlay src="https://framerusercontent.com/images/MhiBwbuhgwo1AmTiM5FjGiKdF0.jpg?scale-down-to=1024" title="10:10" />}
           >
             <p className="text-xl">
               Created a &quot;drop&quot; mechanism, releasing one product (heavily discounted Rolex) per hour, on
@@ -168,7 +169,7 @@ export default function Home() {
           </ExperienceBlock>
         </div>
         <div className="mt-6 border border-top border-white w-full flex items-center border-x-0 py-6 justify-center">
-          <h3 className="font-fantastique text-2xl">Let&apos;s build something together.</h3>
+          <h3 className="font-sans text-2xl">Let&apos;s build something together.</h3>
         </div>
         <div className="-mt-5 -ml-[22px]">
           <MeshSketch containerRef={containerRef} />
