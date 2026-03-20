@@ -39,13 +39,11 @@ export default function Home() {
 
   const [headline1] = useTypingHeadlines([
     'Full-stack',
-    'React.js',
     'Technical',
   ]);
 
   const [headline2] = useTypingHeadlines([
     'developer',
-    'extraordinaire',
     'lead.',
   ]);
 
